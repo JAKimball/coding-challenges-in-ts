@@ -7,6 +7,7 @@ export const sequenceSum = (
 	for (let i = begin; i <= end; i += step) {
 		result += i;
 	}
+
 	return result;
 };
 
@@ -33,6 +34,7 @@ export function findUniq(arr: number[]): number {
 			return el;
 		}
 	}
+
 	return 0;
 }
 
@@ -61,23 +63,19 @@ function burner(c: number, h: number, o: number) {
 
 burner(45, 11, 100); //?
 
-// compare by value
-burner(354, 1023230, 0) === [0, 0, 354];
+burner(354, 1023230, 0).toString() === [0, 0, 354].toString(); //?
+burner(939, 3, 694).toString() === [1, 346, 0].toString(); //?
+burner(215, 41, 82100).toString() === [20, 215, 0].toString(); //?
+burner(113, 0, 52).toString() === [0, 26, 0].toString(); //?
 
-//
+burner(45, 11, 100).toString() === [5, 45, 0].toString(); //?
+burner(354, 1023230, 0).toString() === [0, 0, 354].toString(); //?
+burner(939, 3, 694).toString() === [1, 346, 0].toString(); //?
+burner(215, 41, 82100).toString() === [20, 215, 0].toString(); //?
+burner(113, 0, 52).toString() === [0, 26, 0].toString(); //?
 
-burner(939, 3, 694) === [1, 346, 0]; //?
-burner(215, 41, 82100) === [20, 215, 0]; //?
-burner(113, 0, 52) === [0, 26, 0]; //?
-
-burner(45, 11, 100) === [5, 45, 0]; //?
-burner(354, 1023230, 0) === [0, 0, 354]; //?
-burner(939, 3, 694) === [1, 346, 0]; //?
-burner(215, 41, 82100) === [20, 215, 0]; //?
-burner(113, 0, 52) === [0, 26, 0]; //?
-
-let timestring = "10:22:33";
-timestring[2]; //?
+// let timestring = "10:22:33";
+// timestring[2]; //?
 
 // convert number to string with leading zeros
 const num = 5;
