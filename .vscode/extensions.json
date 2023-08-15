@@ -1,10 +1,10 @@
 {
-	"recommendations": [
-		"davidanson.vscode-markdownlint",
-		"dbaeumer.vscode-eslint",
-		"esbenp.prettier-vscode",
-		"streetsidesoftware.code-spell-checker",
-		"wallabyjs.quokka-vscode",
-		"zixuanchen.vitest-explorer"
-	]
+  "recommendations": [
+    "davidanson.vscode-markdownlint",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "streetsidesoftware.code-spell-checker",
+    "wallabyjs.quokka-vscode",
+    "zixuanchen.vitest-explorer"
+  ]
 }

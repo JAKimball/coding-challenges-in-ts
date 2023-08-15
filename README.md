@@ -33,9 +33,9 @@ npm i coding-challenges-in-ts
 ```
 
 ```ts
-import { greet } from "coding-challenges-in-ts";
+import { greet } from 'coding-challenges-in-ts'
 
-greet("Hello, world!");
+greet('Hello, world!')
 ```
 
 ## Development
