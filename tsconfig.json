@@ -11,6 +11,7 @@
     "sourceMap": true,
     "strict": true,
     "target": "ES2022",
+    "types": ["vitest/importMeta"],
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src"]

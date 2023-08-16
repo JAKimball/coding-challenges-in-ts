@@ -1,6 +1,9 @@
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
+  define: {
+    'import.meta.vitest': false,
+  },
   test: {
     clearMocks: true,
     coverage: {
@@ -11,6 +14,7 @@ export default defineConfig({
       reporter: ['html', 'lcov'],
     },
     exclude: ['lib', 'node_modules'],
+    includeSource: ['src/**/*.{js,ts}'],
     setupFiles: ['console-fail-test/setup'],
   },
 })
