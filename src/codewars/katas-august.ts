@@ -15,17 +15,6 @@ if (import.meta.vitest) {
   })
 }
 
-isTriangle(1, 2, 2) //?
-isTriangle(7, 2, 2) //?
-isTriangle(1, 2, 3) //?
-isTriangle(1, 3, 2) //?
-isTriangle(3, 1, 2) //?
-isTriangle(5, 1, 2) //?
-isTriangle(1, 2, 5) //?
-isTriangle(2, 5, 1) //?
-
-// radix sort?
-
 export function triangular(n: number): number {
   if (n < 0) {
     return 0
@@ -33,17 +22,6 @@ export function triangular(n: number): number {
 
   return ((n + 1) * n) / 2
 }
-
-triangular(0) //?
-triangular(2) //?
-triangular(3) //?
-triangular(-10) //?
-triangular(-9) //?
-triangular(5) //?
-triangular(9) //?
-triangular(10) //?
-triangular(100) //?
-triangular(-454) //?
 
 // in-source test suites
 if (import.meta.vitest) {
@@ -63,3 +41,5 @@ if (import.meta.vitest) {
     })
   })
 }
+
+// radix sort?

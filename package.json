@@ -43,6 +43,7 @@
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitest/coverage-istanbul": "^0.34.0",
+    "@vitest/ui": "^0.34.1",
     "console-fail-test": "^0.2.3",
     "cspell": "^7.0.0",
     "eslint": "^8.40.0",
