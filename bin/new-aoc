@@ -1,0 +1,130 @@
+#!/bin/bash
+
+# Copy template files for a new Advent of Code daily challenge based on year and day on the command line.
+
+# This script is designed to be run from the root of the AOC repo
+
+# Check for year, and day on the command line
+if [ $# -eq 0 ]
+  then
+    echo "No arguments supplied"
+    echo "Usage: new-aoc <year> <day>"
+    exit 1
+fi
+
+# Set up variables
+REPO_NAME="${PWD##*/}"
+YEAR=$1
+DAY=$2
+
+# Advent of Code session cookie
+
+function session_cookie_error {
+  echo "Create a .env file in the src/aoc directory with the following contents:"
+  echo "SESSION_COOKIE=<your session cookie from adventofcode.com>"
+  exit 1
+}
+
+ENV_FILE="${PWD}/src/aoc/.env"
+# test if .env file exists
+if [ ! -f "${ENV_FILE}" ]
+then
+  echo "Error: ${ENV_FILE} does not exist"
+  session_cookie_error
+fi
+SESSION_COOKIE=$(grep -oP 'SESSION_COOKIE=\K.*' "${ENV_FILE}")
+# test if SESSION_COOKIE is empty
+if [ -z "${SESSION_COOKIE}" ]
+then
+  echo "Error: SESSION_COOKIE is empty"
+  session_cookie_error
+fi
+echo "Session Cookie: ${SESSION_COOKIE}"
+
+# AOC website URL for the current year and day
+AOC_URL="https://adventofcode.com/${YEAR}/day/${DAY}"
+
+# Pull the problem description from the Advent of Code website and assign it to a variable
+AOC_RESPONSE=$(curl --user-agent "via curl with shell script by jonathan.kimball@jonathankimball.dev" --cookie "session=${SESSION_COOKIE}" "{$AOC_URL}")
+PROBLEM_DESCRIPTION=$(echo "${AOC_RESPONSE}" | grep -zo '<article class="day-desc">.*</article>' | tr '\0' ' ')
+
+# Parse the day title from the AOC website and assign it to a variable
+DAY_TITLE=$(echo "${PROBLEM_DESCRIPTION}" | grep -oP '<h2>--- Day \d+: \K.*(?= ---</h2>)')
+
+# convert day title to cabob-case
+DAY_TITLE=$(echo "${DAY_TITLE}" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+echo "Day Title: ${DAY_TITLE}"
+
+# Exit if the day title is empty
+if [ -z "${DAY_TITLE}" ]
+then
+  echo "Day title is empty"
+  echo "AOC Response:"
+  echo "${AOC_RESPONSE}"
+  exit 1
+fi
+
+# Day directory and README.md filename
+RELATIVE_DAY_DIR="src/aoc/${YEAR}/day-${DAY}-${DAY_TITLE}/"
+DAY_DIR="${PWD}/${RELATIVE_DAY_DIR}"
+DAY_README="${DAY_DIR}README.md"
+
+# Code and data filenames
+CODE_FILENAME="aoc${YEAR}-d${DAY}.ts"
+DATA_FILENAME="aoc${YEAR}-d${DAY}.txt"
+SAMPLE_DATA_FILENAME="aoc${YEAR}-d${DAY}-sample.txt"
+
+# Template files
+TEMPLATE_DIR="${PWD}/src/aoc/template/"
+TEMPLATE_README="${TEMPLATE_DIR}README.md"
+TEMPLATE_CODE="${TEMPLATE_DIR}aoc-template.ts"
+
+# Create the directory for the day
+mkdir -p "${DAY_DIR}"
+
+# Copy the template files into the day directory using the day's filenames
+# const [year, day] = ['${YEAR}', '${DAY}']
+RELATIVE_DAY_DIR_ESCAPED=$(printf '%s\n' "$RELATIVE_DAY_DIR" | sed -e 's/[\/&]/\\&/g')
+cat "${TEMPLATE_CODE}" | sed "/const \[year, day, path\]/ s/\['', '', ''\]/['${YEAR}', '${DAY}', '${RELATIVE_DAY_DIR_ESCAPED}']/" >"${DAY_DIR}${CODE_FILENAME}"
+
+# Create the sample data file
+# pull sample data from the AOC website and save it to the sample data file
+echo "${PROBLEM_DESCRIPTION}" | tr '\n' '`' | grep -Po '(?<=<pre><code>).*?(?=<\/code><\/pre>)' | tr '`' '\n' >"${DAY_DIR}${SAMPLE_DATA_FILENAME}"
+
+touch "${DAY_DIR}${SAMPLE_DATA_FILENAME}"
+
+# Create the data file
+# Pull problem data from the AOC website and save it to the data file
+curl --user-agent "via curl with shell script by jonathan.kimball@jonathankimball.dev" --cookie "session=${SESSION_COOKIE}" "${AOC_URL}/input" >"${DAY_DIR}${DATA_FILENAME}"
+
+# Update the README.md file with the day's title
+printf "# Advent of Code ${YEAR} Day ${DAY}\n\n" >>"${DAY_README}"
+cat "${TEMPLATE_README}" >>"${DAY_README}"
+
+# Append links to the problem description and sample data to the README.md file
+printf "## Problem Description\n\n" >>"${DAY_README}"
+printf "[${AOC_URL}](${AOC_URL})\n\n" >>"${DAY_README}"
+printf "## Sample Data\n\n" >>"${DAY_README}"
+printf "[${SAMPLE_DATA_FILENAME}](./${SAMPLE_DATA_FILENAME})\n\n" >>"${DAY_README}"
+
+# Add the problem description to the README.md file
+# Convert the HTML problem description to markdown
+# PROBLEM_DESCRIPTION=$(echo "${PROBLEM_DESCRIPTION}" | pandoc -f html -t markdown)
+
+printf "\n----------\n\n" >>"${DAY_README}"
+printf "${PROBLEM_DESCRIPTION}" >>"${DAY_README}"
+printf "\n----------\n\n" >>"${DAY_README}"
+
+# Pull the latest changes from GitHub
+# git pull
+
+# Add the new files to git
+# git add "${DAY_DIR}"
+
+# Commit the changes
+# git commit -m "Add ${YEAR} Day ${DAY}"
+
+# Push the changes to GitHub
+# git push
+
+
