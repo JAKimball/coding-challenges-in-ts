@@ -14,7 +14,11 @@
       }
     }
   ],
-  "plugins": ["prettier-plugin-curly", "prettier-plugin-packagejson"],
+  "plugins": ["prettier-plugin-packagejson"],
+  "plugins-comments": {
+    "removed": ["prettier-plugin-curly"],
+    "see": ["https://github.com/JoshuaKGoldberg/prettier-plugin-curly"]
+  },
   "trailingComma": "es5",
   "useTabs": false,
   "tabWidth": 2,

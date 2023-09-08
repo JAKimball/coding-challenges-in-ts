@@ -1,4 +1,5 @@
 import fs from 'fs'
+
 import * as lib from '../../lib/index.js'
 
 const [year, day, path] = ['2022', '13', 'src/aoc/2022/day-13-distress-signal/']

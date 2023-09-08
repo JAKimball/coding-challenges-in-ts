@@ -14,7 +14,7 @@ const matches = new Map<string, number>()
 
 const add = (c: string): void => {
   if (matches.has(c)) {
-    const count = matches.get(c)!
+    const count = matches.get(c) ?? 0
     matches.set(c, count + 1)
     if (count > 0) {
       matchCount++
@@ -25,7 +25,7 @@ const add = (c: string): void => {
 }
 
 const remove = (c: string): void => {
-  let count = matches.get(c)!
+  let count = matches.get(c) ?? 0
   matches.set(c, --count)
   if (count > 0) {
     matchCount--

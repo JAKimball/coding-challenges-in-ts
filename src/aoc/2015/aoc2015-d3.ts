@@ -9,20 +9,21 @@ type Point = {
 }
 
 enum Heading {
-  NORTH = '^',
   EAST = '>',
+  NORTH = '^',
   SOUTH = 'v',
   WEST = '<',
 }
 
 const location: Point = { x: 0, y: 0 }
 
-const memory: Set<string> = new Set()
+const memory = new Set<string>()
 const hereBefore = () => {
   const locationKey = JSON.stringify(location)
   if (memory.has(locationKey)) {
     return true
   }
+
   memory.add(locationKey)
   return false
 }
@@ -42,11 +43,14 @@ const move = (heading: Heading, distance = 1) => {
       location.y -= distance
       break
   }
+
   hereBefore()
 }
 
 hereBefore()
-input.split('').forEach(heading => move(heading))
+input.split('').forEach(heading => {
+  move(heading as Heading)
+})
 
 console.log('Houses', memory.size)
 

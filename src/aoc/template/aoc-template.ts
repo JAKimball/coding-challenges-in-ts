@@ -1,4 +1,6 @@
+/****
 import fs from 'fs'
+
 import * as lib from '../../lib/index.js'
 
 const [year, day, path] = ['', '', '']
@@ -34,3 +36,4 @@ const part2 = () => {
 
 console.log('part1:', part1())
 console.log('part2:', part2())
+****/
