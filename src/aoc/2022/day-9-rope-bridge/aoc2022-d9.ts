@@ -1,5 +1,6 @@
 import fs from 'fs'
-import * as lib from '../../lib/index.js'
+
+// import * as lib from '../../lib/index.js'
 
 const [year, day, path] = ['2022', '9', 'src/aoc/2022/day-9-rope-bridge/']
 
@@ -11,14 +12,14 @@ const rawInput = fs.readFileSync(fullPath, 'utf8')
 // const [raw1, raw2] = rawInput.split('\n\n')
 const input = rawInput.split('\n')
 
-type Point = {
+interface Point {
   x: number
   y: number
 }
 
 enum Heading {
-  NORTH = 'U',
   EAST = 'R',
+  NORTH = 'U',
   SOUTH = 'D',
   WEST = 'L',
 }
@@ -26,32 +27,14 @@ enum Heading {
 let visited: Set<string>
 
 class Actor {
-  knots: Point[] = []
-
-  constructor(ropeLength = 2) {
-    this.knots = Array(ropeLength)
-    for (let i = 0; i < this.knots.length; i++) {
-      this.knots[i] = { x: 0, y: 0 }
-    }
-    this.#hereBefore({ x: 0, y: 0 }) // register the origin as visited
-  }
-
   #hereBefore = (location: Point) => {
     const locationKey = JSON.stringify(location)
     if (visited.has(locationKey)) {
       return true
     }
+
     visited.add(locationKey)
     return false
-  }
-
-  #propagate = (head: Point, tail: Point) => {
-    const dx = head.x - tail.x
-    const dy = head.y - tail.y
-    if (Math.abs(dx) >= 2 || Math.abs(dy) >= 2) {
-      tail.x += Math.sign(dx)
-      tail.y += Math.sign(dy)
-    }
   }
 
   #moveByOne = (heading: Heading) => {
@@ -77,10 +60,30 @@ class Actor {
     this.#hereBefore(this.knots[this.knots.length - 1])
   }
 
+  #propagate = (head: Point, tail: Point) => {
+    const dx = head.x - tail.x
+    const dy = head.y - tail.y
+    if (Math.abs(dx) >= 2 || Math.abs(dy) >= 2) {
+      tail.x += Math.sign(dx)
+      tail.y += Math.sign(dy)
+    }
+  }
+
+  knots: Point[] = []
+
   move = (heading: Heading, distance: number) => {
     while (distance--) {
       this.#moveByOne(heading)
     }
+  }
+
+  constructor(ropeLength = 2) {
+    this.knots = Array<Point>(ropeLength)
+    for (let i = 0; i < this.knots.length; i++) {
+      this.knots[i] = { x: 0, y: 0 }
+    }
+
+    this.#hereBefore({ x: 0, y: 0 }) // register the origin as visited
   }
 }
 
