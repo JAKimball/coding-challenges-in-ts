@@ -1,5 +1,5 @@
-import fs from 'fs'
 import crypto from 'crypto'
+import fs from 'fs'
 
 // const rawInput = fs.readFileSync('assets/aoc/2015/aoc2015-d4-sample.txt', 'utf8')
 const rawInput = fs.readFileSync('assets/aoc/2015/aoc2015-d4.txt', 'utf8')
@@ -10,6 +10,7 @@ const firstNonZero = (str: string) => {
   while (i < str.length && str[i] === '0') {
     i++
   }
+
   return i
 }
 

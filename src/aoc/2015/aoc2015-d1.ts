@@ -5,8 +5,8 @@ const input = fs.readFileSync('assets/aoc/2015/aoc2015-d1.txt', 'utf8')
 
 let floor = 0
 
-for (let i = 0; i < input.length; i++) {
-  switch (input[i]) {
+for (const char of input) {
+  switch (char) {
     case '(':
       floor++
       break
@@ -30,8 +30,10 @@ const enterBasementAt = () => {
         if (--floor === -1) {
           return i + 1
         }
+
         break
     }
+
     i++
   }
 }

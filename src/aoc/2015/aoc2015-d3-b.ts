@@ -18,7 +18,13 @@ enum Heading {
 const visited = new Set<string>()
 
 class Actor {
-  hereBefore = () => {
+  location: Point = { x: 0, y: 0 }
+
+  constructor() {
+    this.hereBefore() // register the origin as visited
+  }
+
+  hereBefore() {
     const locationKey = JSON.stringify(this.location)
     if (visited.has(locationKey)) {
       return true
@@ -28,9 +34,7 @@ class Actor {
     return false
   }
 
-  location: Point = { x: 0, y: 0 }
-
-  move = (heading: Heading, distance = 1) => {
+  move(heading: Heading, distance = 1) {
     switch (heading) {
       case Heading.NORTH:
         this.location.x += distance
@@ -48,10 +52,6 @@ class Actor {
 
     this.hereBefore()
   }
-
-  constructor() {
-    this.hereBefore() // register the origin as visited
-  }
 }
 
 const santa = new Actor()
@@ -62,5 +62,3 @@ input.split('').forEach((heading, index) => {
 })
 
 console.log('Houses', visited.size)
-
-//
