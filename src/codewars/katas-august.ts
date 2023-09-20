@@ -3,7 +3,7 @@ export function isTriangle(a: number, b: number, c: number): boolean {
   return sum - 2 * Math.max(a, b, c) > 0
 }
 
-// in-source test suites
+// in-source test
 if (import.meta.vitest) {
   const { describe, expect, it } = import.meta.vitest
   describe('isTriangle tests', () => {
@@ -23,7 +23,7 @@ export function triangular(n: number): number {
   return ((n + 1) * n) / 2
 }
 
-// in-source test suites
+// in-source test
 if (import.meta.vitest) {
   const { describe, expect, it } = import.meta.vitest
   describe('triangular tests', () => {
