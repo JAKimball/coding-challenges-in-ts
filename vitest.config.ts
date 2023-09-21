@@ -5,6 +5,9 @@ export default defineConfig({
     'import.meta.vitest': false,
   },
   test: {
+    benchmark: {
+      includeSource: ['src/**/*.{js,ts}'],
+    },
     clearMocks: true,
     coverage: {
       all: true,
