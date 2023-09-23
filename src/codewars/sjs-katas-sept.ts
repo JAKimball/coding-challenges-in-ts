@@ -139,27 +139,27 @@ if (import.meta.vitest) {
     })
   })
 
-  bench(
-    'rbg using sub arrow function',
-    () => {
-      rgb(-1, 0xff, 0x100)
-    },
-    { time: 3000, warmupTime: 500 }
-  )
-  bench(
-    'rbg using global arrow function',
-    () => {
-      rgb2(-1, 0xff, 0x100)
-    },
-    { time: 3000, warmupTime: 500 }
-  )
-  bench(
-    'rbg using sub-function',
-    () => {
-      rgb3(-1, 0xff, 0x100)
-    },
-    { time: 3000, warmupTime: 500 }
-  )
+  // bench(
+  //   'rbg using sub arrow function',
+  //   () => {
+  //     rgb(-1, 0xff, 0x100)
+  //   },
+  //   { time: 3000, warmupTime: 500 }
+  // )
+  // bench(
+  //   'rbg using global arrow function',
+  //   () => {
+  //     rgb2(-1, 0xff, 0x100)
+  //   },
+  //   { time: 3000, warmupTime: 500 }
+  // )
+  // bench(
+  //   'rbg using sub-function',
+  //   () => {
+  //     rgb3(-1, 0xff, 0x100)
+  //   },
+  //   { time: 3000, warmupTime: 500 }
+  // )
 }
 
 /***************************
