@@ -1,4 +1,4 @@
-import { memoize } from './memoize.js'
+import { memoize } from '../dp/memoize.js'
 
 export const fib = memoize((n: number): bigint => {
   if (n <= 2) return 1n
