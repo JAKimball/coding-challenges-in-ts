@@ -1,4 +1,6 @@
-type MemoFunction<F> = F & {
+type MemoizableFunction = (...args: unknown[]) => unknown
+
+type MemoFunction = MemoizableFunction & {
   map: Map<string, unknown>
   stats: {
     equivalentCallCount: number
@@ -7,8 +9,6 @@ type MemoFunction<F> = F & {
     readonly savings: number
   }
 }
-
-type MemoizableFunction<T> = (...args: unknown[]) => T
 
 // To allow any bigint type arguments to be indexed in the map...
 // (see: https://github.com/GoogleChromeLabs/jsbi/issues/30)
@@ -24,7 +24,7 @@ type MemoizableFunction<T> = (...args: unknown[]) => T
  * @returns
  */
 
-export const memoize = <F extends MemoizableFunction<T>>(nonMemoFunction: F): MemoFunction<F> => {
+export const memoize = <F extends MemoizableFunction>(nonMemoFunction: F): F => {
   // export const memoize = (f: Function) => {
 
   interface Cache {
@@ -51,7 +51,7 @@ export const memoize = <F extends MemoizableFunction<T>>(nonMemoFunction: F): Me
     maxHeight = 0
   const maxHeightStack: number[] = []
 
-  const memoized = (...args: unknown[]) => {
+  const memoized = (...args: Parameters<F>): ReturnType<F> => {
     const key = JSON.stringify(args)
 
     let cache = map.get(key)
@@ -80,10 +80,10 @@ export const memoize = <F extends MemoizableFunction<T>>(nonMemoFunction: F): Me
     }
 
     stats.equivalentCallCount += branchSize
-    return cache.result
+    return cache.result as ReturnType<F>
   }
 
   memoized.map = map
   memoized.stats = stats
-  return memoized as MemoFunction<F>
+  return memoized as unknown as F
 }

@@ -16,8 +16,8 @@ ackermann.callCount = 0
 
 export const ackermann_m = memoize((m: number, n: bigint): bigint => {
   if (m === 0) return n + 1n
-  if (n === 0n) return ackermann_m(m - 1, 1n)
-  return ackermann_m(m - 1, ackermann_m(m, n - 1n))
+  if (n === 0n) return ackermann_m(m - 1, 1n) as bigint
+  return ackermann_m(m - 1, ackermann_m(m, n - 1n)) as bigint
 })
 
 export const ackermann_test = (ackermann: AckermannFunction) => {
