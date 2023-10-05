@@ -52,7 +52,7 @@ A place for quick experiments in TypeScript with node and Vitest.
 
 ## See also
 
-1. [TypeScript Bad Habits](https://link.medium.com/2DBxUVVedtb)
+1. [TypeScript Bad Habits](https://aroundreact.com/10-bad-typescript-habits-to-get-rid-of-in-2023)
 
 ## TODO
 
