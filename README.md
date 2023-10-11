@@ -21,6 +21,25 @@
     <img alt="TypeScript: Strict 💪" src="https://img.shields.io/badge/typescript-strict_💪-21bb42.svg" />
 </p>
 
+## Table of Contents
+
+In the `src` directory, you'll find the following subdirectories:
+
+- [x] [aoc (Advent of Code)](./src/aoc)
+- [x] [codewars](./src/codewars)
+- [x] [dcp (Daily Coding Problem)](./src/dcp)
+- [x] [dp (Dynamic Programming Exercises)](./src/dp)
+
+### Possible Future Subdirectories
+
+- [ ] [Algorithms](./src/algorithms)
+- [ ] [Data Structures](./src/data-structures)
+- [ ] [Design Patterns](./src/design-patterns)
+- [ ] [Interview Questions](./src/interview-questions)
+- [ ] [hackerrank](./src/hackerrank)
+- [ ] [interviewcake](./src/interviewcake)
+- [ ] [leetcode](./src/leetcode)
+
 ## Usage
 
 ```shell
