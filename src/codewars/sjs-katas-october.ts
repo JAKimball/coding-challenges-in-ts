@@ -20,7 +20,7 @@ if (import.meta.vitest) {
   }
 
   const { assert, describe, expect, it } = import.meta.vitest
-  describe('solution', function () {
+  describe('getMiddle', function () {
     it('should handle basic tests', function () {
       test('test', 'es')
       test('testing', 't')
@@ -56,6 +56,72 @@ if (import.meta.vitest) {
   describe('getCount', function () {
     it('should pass a sample test', function () {
       assert.strictEqual(Kata.getCount('abracadabra'), 5)
+    })
+  })
+}
+
+/***************************
+ * First non-repeating character
+ *
+ */
+
+function firstNonRepeatingLetter(s: string) {
+  const map = new Map<string, number>()
+  const lc_s = s.toLocaleLowerCase()
+
+  for (const c of lc_s) {
+    const n = map.get(c)
+    map.set(c, n ? n + 1 : 1)
+  }
+
+  for (let i = 0; i < s.length; i++) {
+    if (map.get(lc_s[i]) === 1) return s[i]
+  }
+
+  return ''
+}
+
+// in-source test suites
+if (import.meta.vitest) {
+  const { assert, describe, expect, it } = import.meta.vitest
+  describe('firstNonRepeatingLetter', function () {
+    it('should handle simple tests', function () {
+      assert.strictEqual(firstNonRepeatingLetter('a'), 'a')
+      assert.strictEqual(firstNonRepeatingLetter('stress'), 't')
+      assert.strictEqual(firstNonRepeatingLetter('moonmen'), 'e')
+    })
+  })
+}
+
+/****************************
+ * Who likes this?
+ */
+
+export const likes = (a: string[]) => {
+  switch (a.length) {
+    case 0:
+      return `no one likes this`
+    case 1:
+      return `${a[0]} likes this`
+    case 2:
+      return `${a[0]} and ${a[1]} like this`
+    case 3:
+      return `${a[0]}, ${a[1]} and ${a[2]} like this`
+    default:
+      return `${a[0]}, ${a[1]} and ${a.length - 2} others like this`
+  }
+}
+
+// in-source test suites
+if (import.meta.vitest) {
+  const { assert, describe, expect, it } = import.meta.vitest
+  describe('likes: static tests', function () {
+    it('should return correct text', function () {
+      assert.equal(likes([]), 'no one likes this')
+      assert.equal(likes(['Peter']), 'Peter likes this')
+      assert.equal(likes(['Jacob', 'Alex']), 'Jacob and Alex like this')
+      assert.equal(likes(['Max', 'John', 'Mark']), 'Max, John and Mark like this')
+      assert.equal(likes(['Alex', 'Jacob', 'Mark', 'Max']), 'Alex, Jacob and 2 others like this')
     })
   })
 }
