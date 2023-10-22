@@ -4,6 +4,7 @@ import { memoize } from '../dp/memoize.js'
 
 /***************************
  * Example test template
+ */
 
 export function isTriangle(a: number, b: number, c: number): boolean {
   const sum = a + b + c
@@ -21,5 +22,3 @@ if (import.meta.vitest) {
     })
   })
 }
-
-*/

@@ -1,15 +1,16 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { assert, describe, expect, it } from 'vitest'
+
 import {
-  fib,
-  numWays,
-  hailstone,
-  hailstone2,
-  gridTraveler,
   decodeStr,
   encodeStr,
-  node,
+  fib,
+  gridTraveler,
+  hailstone,
+  hailstone2,
   missing,
+  node,
+  numWays,
 } from './fib.js'
 // import * as fib from "./js"
 
@@ -26,15 +27,15 @@ describe('hailstone functions:', () => {
   })
   it('hailstone2(n) === hailstone(n)', () => {
     for (let i = 1; i <= 100; i++) expect(hailstone2(i)).toBe(hailstone(i))
-    console.table(
-      [...hailstone.map.values()],
-      ['result', 'hitCount', 'stackHeight', 'maxStackHeight', 'branchSize']
-    )
+    // console.table(
+    //   [...hailstone.map.values()],
+    //   ['result', 'hitCount', 'stackHeight', 'maxStackHeight', 'branchSize']
+    // )
 
-    console.table(
-      [...hailstone2.map.values()],
-      ['result', 'hitCount', 'stackHeight', 'maxStackHeight', 'branchSize']
-    )
+    // console.table(
+    //   [...hailstone2.map.values()],
+    //   ['result', 'hitCount', 'stackHeight', 'maxStackHeight', 'branchSize']
+    // )
   })
 })
 

@@ -22,6 +22,7 @@
   ],
   "scripts": {
     "build": "tsup",
+    "devtest": "vitest --ui --open --api.port 32250",
     "format": "prettier \"**/*\" --ignore-unknown",
     "format:write": "pnpm format --write",
     "lint": "eslint . .*js --max-warnings 0 --report-unused-disable-directives",
