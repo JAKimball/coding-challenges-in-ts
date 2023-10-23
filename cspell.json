@@ -30,6 +30,7 @@
     "robo",
     "tsup",
     "Unstaged",
+    "vitest",
     "wontfix"
   ]
 }
