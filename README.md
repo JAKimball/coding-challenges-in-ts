@@ -71,6 +71,8 @@ A place for quick experiments in TypeScript with node and Vitest.
 
 ## Visualization of the project folder structure
 
+The following is a visualization of the project folder structure.
+
 ![Visualization of the codebase](./assets/images/diagram.svg)
 
 ## See also
