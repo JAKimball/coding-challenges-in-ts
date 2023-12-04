@@ -116,7 +116,7 @@ export function duplicateEncode(word: string) {
 const word = 'abcdefghijklmnopqrstuvwxyz'.repeat(10000)
 
 const t0 = performance.now()
-const result = duplicateEncode(word)
+duplicateEncode1(word)
 const t1 = performance.now()
 
 console.log(`Execution time: ${t1 - t0} ms`)
