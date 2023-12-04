@@ -69,6 +69,10 @@ Thanks! 💖
 
 A place for quick experiments in TypeScript with node and Vitest.
 
+## Visualization of the project folder structure
+
+![Visualization of the codebase](./assets/images/diagram.svg)
+
 ## See also
 
 1. [TypeScript Bad Habits](https://aroundreact.com/10-bad-typescript-habits-to-get-rid-of-in-2023)
