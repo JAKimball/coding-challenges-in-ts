@@ -1,5 +1,7 @@
 {
-  "editor.codeActionsOnSave": { "source.fixAll.eslint": true },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.rulers": [100],
@@ -16,6 +18,6 @@
   "eslint.rules.customizations": [{ "rule": "*", "severity": "warn" }],
   "typescript.tsdk": "node_modules/typescript/lib",
   "github-actions.workflows.pinned.workflows": [],
-  "cSpell.words": ["Memoizable"],
+  "cSpell.words": ["Kata", "Memoizable"],
   "testing.automaticallyOpenPeekView": "never"
 }
