@@ -2,7 +2,7 @@
 
 import { performance } from 'perf_hooks'
 
-import { memoize } from '../dp/memoize.js'
+import { memoize } from '../../dp/memoize.js'
 
 export class Kata {
   static disemvowel(str: string): string {

@@ -1,6 +1,6 @@
 import { performance } from 'perf_hooks'
 
-import { memoize } from '../dp/memoize.js'
+import { memoize } from '../../dp/memoize.js'
 
 /***************************
  * Fix string case

@@ -1,7 +1,7 @@
 // Seattle JS - Code Katas - September 2023
 import { performance } from 'perf_hooks'
 
-import { memoize } from '../dp/memoize.js'
+import { memoize } from '../../dp/memoize.js'
 
 export function capitalize(s: string) {
   let e = ''
