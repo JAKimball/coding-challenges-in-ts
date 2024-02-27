@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json.schemastore.org/prettierrc",
+  "overrides": [
+    {
+      "files": ".nvmrc",
+      "options": {
+        "parser": "yaml"
+      }
+    }
+  ],
+  "plugins": ["prettier-plugin-packagejson"],
+  "plugins-comments": {
+    "removed": ["prettier-plugin-curly"],
+    "see": ["https://github.com/JoshuaKGoldberg/prettier-plugin-curly"]
+  },
+  "trailingComma": "es5",
+  "useTabs": false,
+  "tabWidth": 2,
+  "semi": false,
+  "singleQuote": true,
+  "printWidth": 100,
+  "arrowParens": "avoid",
+  "bracketSpacing": true
+}
