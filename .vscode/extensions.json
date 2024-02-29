@@ -5,6 +5,6 @@
     "esbenp.prettier-vscode",
     "streetsidesoftware.code-spell-checker",
     "wallabyjs.quokka-vscode",
-    "zixuanchen.vitest-explorer"
+    "vitest.explorer"
   ]
 }
