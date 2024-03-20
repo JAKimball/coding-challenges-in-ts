@@ -85,7 +85,7 @@ export function sortCsvColumns(csvFileContent: string): string {
 
   const TitleIndex = Array.from(titles.entries()).sort((a, b) => a[1].localeCompare(b[1]))
 
-  let result: string[] = []
+  const result: string[] = []
   result[0] = TitleIndex.map(v => v[0]).join(';')
   // TODO: continue here
   // for (i = )
