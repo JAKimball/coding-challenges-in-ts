@@ -78,25 +78,30 @@ if (import.meta.vitest) {
   })
 }
 
-// Sort the columns of a csv-file
+/**
+ * Sort the columns of a csv-file
+ * https://www.codewars.com/kata/57f7f71a7b992e699400013f/train/typescript
+ */
+
 export function sortCsvColumns(csvFileContent: string): string {
-  const rows: string[] = csvFileContent.split(';')
-  const titles: string[] = rows[0].split(';')
+  const rows: string[] = csvFileContent.split('\n')
 
-  const TitleIndex = Array.from(titles.entries()).sort((a, b) => a[1].localeCompare(b[1]))
+  const sortedColumnIndex = [...rows[0].split(';').entries()].sort((a, b) =>
+    a[1].localeCompare(b[1], 'en', { sensitivity: 'base' })
+  )
 
-  const result: string[] = []
-  result[0] = TitleIndex.map(v => v[0]).join(';')
-  // TODO: continue here
-  // for (i = )
-
-  return result
+  return rows
+    .map(row => {
+      const items = row.split(';')
+      return sortedColumnIndex.map(([columnIndex]) => items[columnIndex]).join(';')
+    })
+    .join('\n')
 }
 
 // test
 if (import.meta.vitest) {
   const { assert, describe, expect, it } = import.meta.vitest
-  describe('KataTest', function () {
+  describe('Testing sortCsvColumns', function () {
     it('BasicTests', function () {
       let preSorting =
         'myjinxin2015;raulbc777;smile67;Dentzil;SteffenVogel_79\n' +
