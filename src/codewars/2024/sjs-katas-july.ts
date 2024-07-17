@@ -118,3 +118,33 @@ if (import.meta.vitest) {
     })
   })
 }
+
+/**
+ * Maximum subarray sum
+ * https://www.codewars.com/kata/54521e9ec8e60bc4de000d6c/train/javascript
+ */
+
+const maxSequence = (arr: number[]) => {
+  let localSum = 0
+  let maxLocalSum = 0
+
+  for (const x of arr) {
+    localSum = Math.max(localSum + x, x)
+    maxLocalSum = Math.max(maxLocalSum, localSum)
+  }
+
+  return maxLocalSum
+}
+
+if (import.meta.vitest) {
+  const { assert, describe, expect, it } = import.meta.vitest
+
+  describe('maxSequence test', () => {
+    it('should work on an empty array', function () {
+      assert.strictEqual(maxSequence([]), 0)
+    })
+    it('should work on the example', function () {
+      assert.strictEqual(maxSequence([-2, 1, -3, 4, -1, 2, 1, -5, 4]), 6)
+    })
+  })
+}
