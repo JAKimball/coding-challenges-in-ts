@@ -15,10 +15,15 @@
     "typescriptreact",
     "yaml"
   ],
-  "eslint.rules.customizations": [{ "rule": "*", "severity": "warn" }],
+  "eslint.rules.customizations": [
+    {
+      "rule": "*",
+      "severity": "warn"
+    }
+  ],
   "typescript.tsdk": "node_modules/typescript/lib",
   "github-actions.workflows.pinned.workflows": [],
-  "cSpell.words": ["Kata", "Memoizable"],
+  "cSpell.words": ["jonat", "Kata", "Memoizable", "nums"],
   "testing.automaticallyOpenPeekView": "never",
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
