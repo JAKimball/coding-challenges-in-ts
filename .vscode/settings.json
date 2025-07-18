@@ -23,7 +23,7 @@
   ],
   "typescript.tsdk": "node_modules/typescript/lib",
   "github-actions.workflows.pinned.workflows": [],
-  "cSpell.words": ["jonat", "Kata", "Memoizable", "nums"],
+  "cSpell.words": ["jonat", "Kata", "Memoizable", "nums", "wallabyjs"],
   "testing.automaticallyOpenPeekView": "never",
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
