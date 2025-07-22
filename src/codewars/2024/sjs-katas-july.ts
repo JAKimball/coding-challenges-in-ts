@@ -119,6 +119,27 @@ if (import.meta.vitest) {
   })
 }
 
+export const filter_list = (l: Array<any>) => l.filter(v => typeof v === 'number')
+
+export const pigIt = (a: string) => a.replace(/\w+/g, s => s.slice(1) + s[0] + 'ay')
+
+export const solution = (nums: number[]) => nums.sort((a: number, b: number) => a - b)
+
+export const validBraces = (braces: string) => {
+  const stack = []
+  const match = new Map()
+  match.set('(', ')')
+  match.set('[', ']')
+  match.set('{', '}')
+
+  for (const c of braces)
+    if (match.has(c)) stack.push(c)
+    else if (c === '}' || c === ']' || c === ')')
+      if (stack.length === 0 || c !== match.get(stack.pop())) return false
+
+  return stack.length === 0
+}
+
 /**
  * Maximum subarray sum
  * https://www.codewars.com/kata/54521e9ec8e60bc4de000d6c/train/javascript
