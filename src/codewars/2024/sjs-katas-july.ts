@@ -47,6 +47,7 @@ export const mergeStrings = (first: string, second: string): string => {
   return first + second
 }
 
+// cspell:disable
 if (import.meta.vitest) {
   const { assert, describe, expect, it } = import.meta.vitest
   describe('mergeStrings', function () {
@@ -64,6 +65,7 @@ if (import.meta.vitest) {
     })
   })
 }
+// cspell:enable
 
 /**
  * Highest Scoring Word
@@ -94,7 +96,7 @@ export const high = (str: string): string => {
 
   return result
 }
-
+// cspell:disable
 if (import.meta.vitest) {
   const { assert, describe, expect, it } = import.meta.vitest
   const solutions = [
@@ -118,6 +120,7 @@ if (import.meta.vitest) {
     })
   })
 }
+// cspell:enable
 
 export const filter_list = (l: Array<any>) => l.filter(v => typeof v === 'number')
 
