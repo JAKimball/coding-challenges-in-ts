@@ -6,6 +6,7 @@ import { memoize } from '../../dp/memoize.js'
  * Example test template
  */
 
+// cspell:disable
 export function isTriangle(a: number, b: number, c: number): boolean {
   const sum = a + b + c
   return sum - 2 * Math.max(a, b, c) > 0
@@ -22,3 +23,4 @@ if (import.meta.vitest) {
     })
   })
 }
+// cspell:enable
