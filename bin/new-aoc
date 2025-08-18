@@ -13,7 +13,7 @@ if [ $# -eq 0 ]
 fi
 
 # Set up variables
-REPO_NAME="${PWD##*/}"
+# REPO_NAME="${PWD##*/}"
 YEAR=$1
 DAY=$2
 
@@ -98,22 +98,24 @@ touch "${DAY_DIR}${SAMPLE_DATA_FILENAME}"
 curl --user-agent "via curl with shell script by jonathan.kimball@jonathankimball.dev" --cookie "session=${SESSION_COOKIE}" "${AOC_URL}/input" >"${DAY_DIR}${DATA_FILENAME}"
 
 # Update the README.md file with the day's title
-printf "# Advent of Code ${YEAR} Day ${DAY}\n\n" >>"${DAY_README}"
-cat "${TEMPLATE_README}" >>"${DAY_README}"
+{
+  echo -e "# Advent of Code ${YEAR} Day ${DAY}\n"
+  cat "${TEMPLATE_README}"
 
-# Append links to the problem description and sample data to the README.md file
-printf "## Problem Description\n\n" >>"${DAY_README}"
-printf "[${AOC_URL}](${AOC_URL})\n\n" >>"${DAY_README}"
-printf "## Sample Data\n\n" >>"${DAY_README}"
-printf "[${SAMPLE_DATA_FILENAME}](./${SAMPLE_DATA_FILENAME})\n\n" >>"${DAY_README}"
+  # Append links to the problem description and sample data to the README.md file
+  echo -e "## Problem Description\n"
+  echo -e "[${AOC_URL}](${AOC_URL})\n"
+  echo -e "## Sample Data\n"
+  echo -e "[${SAMPLE_DATA_FILENAME}](./${SAMPLE_DATA_FILENAME})\n"
 
-# Add the problem description to the README.md file
-# Convert the HTML problem description to markdown
-# PROBLEM_DESCRIPTION=$(echo "${PROBLEM_DESCRIPTION}" | pandoc -f html -t markdown)
+  # Add the problem description to the README.md file
+  # Convert the HTML problem description to markdown
+  # PROBLEM_DESCRIPTION=$(echo "${PROBLEM_DESCRIPTION}" | pandoc -f html -t markdown)
 
-printf "\n----------\n\n" >>"${DAY_README}"
-printf "${PROBLEM_DESCRIPTION}" >>"${DAY_README}"
-printf "\n----------\n\n" >>"${DAY_README}"
+  echo -e "\n----------\n"
+  echo -e "${PROBLEM_DESCRIPTION}"
+  echo -e "----------\n"
+} >>"${DAY_README}"
 
 # Pull the latest changes from GitHub
 # git pull
