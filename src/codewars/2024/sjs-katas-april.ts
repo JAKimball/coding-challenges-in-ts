@@ -6,6 +6,8 @@ function addBinary(a: number, b: number) {
   return (a + b).toString(2)
 }
 
+// cspell:words tribonacci
+// https://www.codewars.com/kata/556deca17c58da83c00002db/train/typescript
 export function tribonacci([a, b, c]: [number, number, number], n: number): number[] {
   const result = [a, b, c]
 
