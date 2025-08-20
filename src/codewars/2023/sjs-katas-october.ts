@@ -82,6 +82,7 @@ function firstNonRepeatingLetter(s: string) {
 }
 
 // in-source test suites
+// cspell:disable
 if (import.meta.vitest) {
   const { assert, describe, expect, it } = import.meta.vitest
   describe('firstNonRepeatingLetter', function () {
@@ -92,6 +93,7 @@ if (import.meta.vitest) {
     })
   })
 }
+// cspell:enable
 
 /****************************
  * Who likes this?

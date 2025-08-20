@@ -5,6 +5,7 @@ import { performance } from 'perf_hooks'
 import { memoize } from '../../dp/memoize.js'
 
 export class Kata {
+  // cspell:ignore disemvowel
   static disemvowel(str: string): string {
     let result = ''
     for (const c of str) {
@@ -20,6 +21,7 @@ export class Kata {
 }
 
 // in-source test suites
+// cspell:disable
 if (import.meta.vitest) {
   const { assert, describe, expect, it } = import.meta.vitest
 
@@ -41,6 +43,7 @@ if (import.meta.vitest) {
     })
   })
 }
+// cspell:enable
 
 type AnyFn = (...args: unknown[]) => unknown
 type TimedFn<T extends AnyFn> = (...args: Parameters<T>) => ReturnType<T>

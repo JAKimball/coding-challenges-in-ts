@@ -68,7 +68,7 @@ a significant number of times.
 Further optimization may be had by unrolling the loops.
 */
 
-type SAFunction = typeof surfaceArea // ensure our function is interchangable
+type SAFunction = typeof surfaceArea // ensure our function is interchangeable
 const surfaceArea_Optimized: SAFunction = (board: Board) => {
   const H = board.length
   const firstRow = board[0]

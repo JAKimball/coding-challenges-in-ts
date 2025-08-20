@@ -18,6 +18,7 @@ capitalize('abcdef') // ?
 
 // in-source test suites
 
+// cspell: disable
 if (import.meta.vitest) {
   const { assert, describe, expect, it } = import.meta.vitest
   describe('capitalize() basic tests', function () {
@@ -47,6 +48,7 @@ if (import.meta.vitest) {
     })
   })
 }
+// cspell: enable
 
 export function addLetters(...letters: string[]) {
   let sum = 0
@@ -195,6 +197,7 @@ export function rgb3(r: number, g: number, b: number): string {
 
 rgb3(-1, 0xff, 0x100) // ?
 
+// cspell: disable
 if (import.meta.vitest) {
   const { assert, bench, describe, expect, it } = import.meta.vitest
   const rndTestValue = () => Math.ceil(Math.random() * 280 - 20)
@@ -230,25 +233,4 @@ if (import.meta.vitest) {
   //   { time: 3000, warmupTime: 500 }
   // )
 }
-
-/***************************
- * Example test template
-
-export function isTriangle(a: number, b: number, c: number): boolean {
-  const sum = a + b + c
-  return sum - 2 * Math.max(a, b, c) > 0
-}
-
-// in-source test suites
-if (import.meta.vitest) {
-  const { assert, describe, expect, it } = import.meta.vitest
-  describe('isTriangle tests', () => {
-    it('should pass basic tests', () => {
-      expect(isTriangle(1, 2, 2)).toBe(true)
-      expect(isTriangle(7, 2, 2)).toBe(false)
-      expect(isTriangle(1, 2, 3)).toBe(false)
-    })
-  })
-}
-
-*/
+// cspell: enable

@@ -14,6 +14,7 @@ while (input[input.length - 1] === '') {
   input.pop()
 }
 
+// cspell:words addx
 const part1 = () => {
   const sampleAt = [20, 60, 100, 140, 180, 220, 9999]
   let total = 0
