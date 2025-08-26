@@ -99,6 +99,7 @@ describe('numWays function:', () => {
   })
 })
 
+// cspell:disable
 describe('decodeStr function:', () => {
   it('test case "a2z2r4"', () => {
     expect(decodeStr('a2z2r4')).toBe('aaazzzrrrrr')
@@ -128,6 +129,7 @@ describe('encodeStr function:', () => {
     expect(encodeStr('abchijjklmmmmmmmmmmmmr')).toBe('abchij1klm11r')
   })
 })
+// cspell:enable
 
 describe('Boundary method', () => {
   it('gives expected result', () => {

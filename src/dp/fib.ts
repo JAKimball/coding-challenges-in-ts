@@ -181,7 +181,7 @@ export const encodeStr = (inStr: string): string => {
   return result
 }
 
-const codedStr = encodeStr('abchijjklmmmmmmmmmmmmr')
+const codedStr = encodeStr('abchijjklmmmmmmmmmmmmr') // cspell:disable-line
 // console.log(codedStr)
 
 class BTNode {
