@@ -6,6 +6,8 @@ export function smallEnough(a: number[], limit: number): boolean {
   return !a.some(n => n > limit)
 }
 
+// https://www.codewars.com/kata/556deca17c58da83c00002db/train/typescript
+// cspell:words tribonacci
 export function tribonacci([a, b, c]: [number, number, number], n: number): number[] {
   const result = [a, b, c]
 
@@ -41,106 +43,109 @@ function getRoute(a: Node, b: Node) {
 
 // prettier-ignore
 if (import.meta.vitest) {
-  const { assert, describe, expect, it } = import.meta.vitest
+	const { assert, describe, expect, it } = import.meta.vitest
 
-  describe('tests suite', function () {
-    const { strictEqual } = assert
+	describe('tests suite', function () {
+		const { strictEqual } = assert
 
-    function doTest(a, b, expected, graphString) {
-      const log = `for getRoute(${a.value}, ${b.value}) in graph:\n${graphString}\n`
-      const actual = getRoute(a, b)
-      strictEqual(actual, expected, log)
-    }
+		function doTest(a, b, expected, graphString) {
+			const log = `for getRoute(${a.value}, ${b.value}) in graph:\n${graphString}\n`
+			const actual = getRoute(a, b)
+			strictEqual(actual, expected, log)
+		}
 
-	it('simple acyclic graph', function () {
-		const ascii = 
-			"A ----> B ----> D" + "\n" +
-			"↑       |"         + "\n" +
-			"|       |     E"   + "\n" +
-			"|       ↓"         + "\n" +
-			"|-----> C"         + "\n"
-		;
-		const E = new Node('E'), D = new Node('D'), C = new Node('C');
-		const B = new Node('B', [C, D]);
-		const A = new Node('A', [B, C]);
+		it('simple acyclic graph', function () {
+			const ascii =
+				"A ----> B ----> D" + "\n" +
+				"↑       |" + "\n" +
+				"|       |     E" + "\n" +
+				"|       ↓" + "\n" +
+				"|-----> C" + "\n"
 
-		const edges = {A, B, C, D, E};
-		const matrix = {
-			'A' : {
-				'A' : false, 'B' : true, 'C' : true, 'D' : true, 'E' : false
-			},
-			'B' : {
-				'A' : false, 'B' : false, 'C' : true, 'D' : true, 'E' : false
-			},
-			'C' : {
-				'A' : false, 'B' : false, 'C' : false, 'D' : false, 'E' : false
-			},
-			'D' : {
-				'A' : false, 'B' : false, 'C' : false, 'D' : false, 'E' : false
-			},
-			'E' : {
-				'A' : false, 'B' : false, 'C' : false, 'D' : false, 'E' : false
-			},
-		};
-		for (const a in matrix)
-			for (const b in matrix[a])
-				doTest(edges[a], edges[b], matrix[a][b], ascii);
-	});
+			const E = new Node('E'), D = new Node('D'), C = new Node('C')
+			const B = new Node('B', [C, D])
+			const A = new Node('A', [B, C])
 
-	it('loop ', function () {
-		const ascii =
-			"node----" + "\n" +
-			"↑      |" + "\n" +
-			"|      |" + "\n" +
-			"|------|" + "\n"
-		;
-		const node = new Node('node');
-		node.edges = [node];
-		doTest(node, node, true, ascii);
-	});
+			const edges = { A, B, C, D, E }
+			type NodeKey = 'A' | 'B' | 'C' | 'D' | 'E'
+			const matrix: Record<NodeKey, Record<NodeKey, boolean>> = {
+				'A': {
+					'A': false, 'B': true, 'C': true, 'D': true, 'E': false
+				},
+				'B': {
+					'A': false, 'B': false, 'C': true, 'D': true, 'E': false
+				},
+				'C': {
+					'A': false, 'B': false, 'C': false, 'D': false, 'E': false
+				},
+				'D': {
+					'A': false, 'B': false, 'C': false, 'D': false, 'E': false
+				},
+				'E': {
+					'A': false, 'B': false, 'C': false, 'D': false, 'E': false
+				},
+			}
+			for (const a of Object.keys(matrix) as NodeKey[])
+				for (const b of Object.keys(matrix[a]) as NodeKey[])
+					doTest(edges[a], edges[b], matrix[a][b], ascii)
+		})
 
-	it('simple cyclic graph ', function () {
-		const ascii = 
-			"A----->B"         + "\n" +
-			"↑      |"         + "\n" +
-			"|      |       F" + "\n" +
-			"|      |"         + "\n" +
-			"|      ↓"         + "\n" +
-			"D<-----C ----> E" + "\n"
-		;
-		const E = new Node('E'), F = new Node('F');
-		const A = new Node('A');
-		const D = new Node('D', [A]);
-		const C = new Node('C', [D, E]);
-		const B = new Node('B', [C]);
-		A.edges = [B];
+		it('loop ', function () {
+			const ascii =
+				"node----" + "\n" +
+				"↑      |" + "\n" +
+				"|      |" + "\n" +
+				"|------|" + "\n"
 
-		const edges = {A, B, C, D, E, F};
-		const matrix = {
-			'A' : {
-				'A' : true, 'B' : true, 'C' : true, 'D' : true, 'E' : true, 'F' : false
-			},
-			'B' : {
-				'A' : true, 'B' : true, 'C' : true, 'D' : true, 'E' : true, 'F' : false
-			},
-			'C' : {
-				'A' : true, 'B' : true, 'C' : true, 'D' : true, 'E' : true, 'F' : false
-			},
-			'D' : {
-				'A' : true, 'B' : true, 'C' : true, 'D' : true, 'E' : true, 'F' : false
-			},
-			'E' : {
-				'A' : false, 'B' : false, 'C' : false, 'D' : false, 'E' : false, 'F' : false
-			},
-			'F' : {
-				'A' : false, 'B' : false, 'C' : false, 'D' : false, 'E' : false, 'F' : false
-			},
-		};
+			const node = new Node('node')
+			node.edges = [node]
+			doTest(node, node, true, ascii)
+		})
 
-		for (const a in matrix)
-			for (const b in matrix[a])
-				doTest(edges[a], edges[b], matrix[a][b], ascii);    })
-  })
+		it('simple cyclic graph ', function () {
+			const ascii =
+				"A----->B" + "\n" +
+				"↑      |" + "\n" +
+				"|      |       F" + "\n" +
+				"|      |" + "\n" +
+				"|      ↓" + "\n" +
+				"D<-----C ----> E" + "\n"
+
+			const E = new Node('E'), F = new Node('F')
+			const A = new Node('A')
+			const D = new Node('D', [A])
+			const C = new Node('C', [D, E])
+			const B = new Node('B', [C])
+			A.edges = [B]
+
+			const edges = { A, B, C, D, E, F }
+			type NodeKey = 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
+			const matrix: Record<NodeKey, Record<NodeKey, boolean>> = {
+				'A': {
+					'A': true, 'B': true, 'C': true, 'D': true, 'E': true, 'F': false
+				},
+				'B': {
+					'A': true, 'B': true, 'C': true, 'D': true, 'E': true, 'F': false
+				},
+				'C': {
+					'A': true, 'B': true, 'C': true, 'D': true, 'E': true, 'F': false
+				},
+				'D': {
+					'A': true, 'B': true, 'C': true, 'D': true, 'E': true, 'F': false
+				},
+				'E': {
+					'A': false, 'B': false, 'C': false, 'D': false, 'E': false, 'F': false
+				},
+				'F': {
+					'A': false, 'B': false, 'C': false, 'D': false, 'E': false, 'F': false
+				},
+			}
+
+			for (const a of Object.keys(matrix) as NodeKey[])
+				for (const b of Object.keys(matrix[a]) as NodeKey[])
+					doTest(edges[a], edges[b], matrix[a][b], ascii)
+		})
+	})
 }
 
 /***************************

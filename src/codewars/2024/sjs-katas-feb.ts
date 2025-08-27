@@ -99,6 +99,7 @@ export function sortCsvColumns(csvFileContent: string): string {
 }
 
 // test
+// cspell:disable
 if (import.meta.vitest) {
   const { assert, describe, expect, it } = import.meta.vitest
   describe('Testing sortCsvColumns', function () {
@@ -127,3 +128,4 @@ if (import.meta.vitest) {
     })
   })
 }
+// cspell:enable

@@ -9,6 +9,7 @@ import { memoize } from '../../dp/memoize.js'
 export const friend = (friends: string[]) => friends.filter(v => v.length === 4)
 
 // in-source test suites
+// cspell:disable
 if (import.meta.vitest) {
   const { assert, describe, expect, it } = import.meta.vitest
   describe('Basic tests', () => {
@@ -30,6 +31,7 @@ if (import.meta.vitest) {
     })
   })
 }
+// cspell:enable
 
 /****
  * Round 2
@@ -104,6 +106,7 @@ export const order = (words: string) => {
 
 // order("is2 Thi1s T4est 3a")
 
+// cspell:disable
 if (import.meta.vitest) {
   const { assert, describe, expect, it } = import.meta.vitest
   describe('solution', function () {
@@ -114,6 +117,7 @@ if (import.meta.vitest) {
     })
   })
 }
+// cspell:enable
 
 /****
  * https://www.codewars.com/kata/61fef3a2d8fa98021d38c4e5/train/javascript
