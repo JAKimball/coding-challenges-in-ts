@@ -6,12 +6,13 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "outDir": "lib",
+    "rootDir": "./src",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2023",
-    "types": ["vitest/importMeta"],
+    "target": "es2025",
+    "types": ["vitest/importMeta", "node"],
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src"]
