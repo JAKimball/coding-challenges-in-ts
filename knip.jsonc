@@ -1,15 +1,15 @@
 {
-  "$schema": "https://unpkg.com/knip@next/schema.json",
+  "$schema": "https://unpkg.com/knip/schema.json",
   "entry": ["src/index.ts!", "script/*e2e.js"],
   "ignoreBinaries": ["dedupe", "gh"],
   "ignoreDependencies": [
     // TODO: investigate if these are still flagged, and file issues if not
     "all-contributors-cli",
-    "c8"
+    "c8",
   ],
   "ignoreExportsUsedInFile": {
     "interface": true,
-    "type": true
+    "type": true,
   },
-  "project": "src/**/*.ts!"
+  "project": "src/**/*.ts!",
 }
