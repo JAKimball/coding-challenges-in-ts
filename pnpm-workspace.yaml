@@ -1,0 +1,6 @@
+publicHoistPattern:
+  - '*vitest*'
+  - vite-node
+allowBuilds:
+  esbuild: true
+  oxc-resolver: true

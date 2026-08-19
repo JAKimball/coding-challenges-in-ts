@@ -21,18 +21,15 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsup",
     "devtest": "vitest --ui --open --api.port 32250",
     "format": "prettier \"**/*\" --ignore-unknown",
     "format:write": "pnpm format --write",
-    "lint": "eslint . .*js --max-warnings 0 --report-unused-disable-directives",
+    "lint": "eslint . --max-warnings 0 --report-unused-disable-directives",
     "lint:knip": "knip",
     "lint:md": "markdownlint \"**/*.md\" \".github/**/*.md\" --rules sentences-per-line",
-    "lint:package": "npmPkgJsonLint .",
     "lint:packages": "pnpm dedupe --check",
     "lint:spelling": "cspell \"**\" \".github/**/*\"",
     "prepare": "husky",
-    "should-semantic-release": "should-semantic-release --verbose",
     "test": "vitest"
   },
   "lint-staged": {
@@ -55,7 +52,6 @@
     "cspell": "^8.19.4",
     "eslint": "^10.8.1",
     "eslint-config-prettier": "^9.1.2",
-    "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsdoc": "^48.11.0",
     "eslint-plugin-jsonc": "^2.21.1",
@@ -74,7 +70,6 @@
     "prettier": "^3.9.6",
     "prettier-plugin-packagejson": "^2.5.22",
     "sentences-per-line": "^0.2.2",
-    "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.67.0",
     "vitest": "^4.1.10",
