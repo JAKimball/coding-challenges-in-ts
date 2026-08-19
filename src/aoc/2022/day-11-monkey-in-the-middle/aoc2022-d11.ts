@@ -3,7 +3,7 @@ import * as lib from '../../lib/index.js'
 
 const [year, day, path] = ['2022', '11', 'src/aoc/2022/day-11-monkey-in-the-middle/']
 
-// eslint-disable-next-line prefer-const
+// oxlint-disable-next-line prefer-const
 let testSample = false
 // testSample = true
 const fullPath = `${path}aoc${year}-d${day}${testSample ? '-sample' : ''}.txt`

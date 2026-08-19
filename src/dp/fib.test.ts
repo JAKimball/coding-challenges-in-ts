@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import { assert, describe, expect, it } from 'vitest'
 
 import {

@@ -9,7 +9,7 @@ const rawInput = fs.readFileSync(`${path}aoc${year}-d${day}-sample.txt`, 'utf8')
 const input = rawInput.split('\n')
 
 const part1 = () => {
-  // eslint-disable-next-line prefer-const
+  // oxlint-disable-next-line prefer-const
   let total = 0
   input.forEach(line => {
     const [n, f, t] = lib.ints(line)
@@ -18,7 +18,7 @@ const part1 = () => {
 }
 
 const part2 = () => {
-  // eslint-disable-next-line prefer-const
+  // oxlint-disable-next-line prefer-const
   let total = 0
   input.forEach(line => {
     const [n, f, t] = lib.ints(line)

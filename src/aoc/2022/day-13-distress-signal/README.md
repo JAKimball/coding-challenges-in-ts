@@ -108,7 +108,7 @@
 - Compare [1,[2,[3,[4,[5,6,7]]]],8,9] vs [1,[2,[3,[4,[5,6,0]]]],8,9]
   - Compare 1 vs 1
   - Compare [2,[3,[4,[5,6,7]]]] vs [2,[3,[4,[5,6,0]]]] - Compare 2 vs 2 - Compare [3,[4,[5,6,7]]] vs [3,[4,[5,6,0]]] - Compare 3 vs 3 - Compare [4,[5,6,7]] vs [4,[5,6,0]] - Compare 4 vs 4 - Compare [5,6,7] vs [5,6,0] - Compare 5 vs 5 - Compare 6 vs 6 - Compare 7 vs 0 - Right side is smaller, so inputs are <em>not</em> in the right order
-  </code></pre>
+    </code></pre>
   <p>What are the indices of the pairs that are already <em>in the right order</em>? (The first pair has index 1, the second pair has index 2, and so on.) In the above example, the pairs in the right order are 1, 2, 4, and 6; the sum of these indices is <code><em>13</em></code>.</p>
   <p>Determine which pairs of packets are already in the right order. <em>What is the sum of the indices of those pairs?</em></p>
   </article>
