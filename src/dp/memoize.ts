@@ -1,6 +1,4 @@
-type MemoizableFunction = (...args: unknown[]) => unknown
-
-type MemoFunction = MemoizableFunction & {
+type Memoized<A extends unknown[], R> = ((...args: A) => R) & {
   map: Map<string, unknown>
   stats: {
     equivalentCallCount: number
@@ -24,7 +22,9 @@ type MemoFunction = MemoizableFunction & {
  * @returns
  */
 
-export const memoize = <F extends MemoizableFunction>(nonMemoFunction: F): F => {
+export const memoize = <A extends unknown[], R>(
+  nonMemoFunction: (...args: A) => R
+): Memoized<A, R> => {
   // export const memoize = (f: Function) => {
 
   interface Cache {
@@ -51,7 +51,7 @@ export const memoize = <F extends MemoizableFunction>(nonMemoFunction: F): F => 
     maxHeight = 0
   const maxHeightStack: number[] = []
 
-  const memoized = (...args: Parameters<F>): ReturnType<F> => {
+  const memoized = (...args: A): R => {
     const key = JSON.stringify(args)
 
     let cache = map.get(key)
@@ -80,10 +80,10 @@ export const memoize = <F extends MemoizableFunction>(nonMemoFunction: F): F => 
     }
 
     stats.equivalentCallCount += branchSize
-    return cache.result as ReturnType<F>
+    return cache.result as R
   }
 
   memoized.map = map
   memoized.stats = stats
-  return memoized as unknown as F
+  return memoized
 }

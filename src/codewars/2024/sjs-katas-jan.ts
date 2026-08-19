@@ -48,7 +48,7 @@ if (import.meta.vitest) {
 	describe('tests suite', function () {
 		const { strictEqual } = assert
 
-		function doTest(a, b, expected, graphString) {
+		function doTest(a: Node, b: Node, expected: boolean, graphString: string) {
 			const log = `for getRoute(${a.value}, ${b.value}) in graph:\n${graphString}\n`
 			const actual = getRoute(a, b)
 			strictEqual(actual, expected, log)

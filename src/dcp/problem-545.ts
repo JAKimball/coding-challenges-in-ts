@@ -106,7 +106,9 @@ const BinaryTreeLowestCommonAncestor = (
   treeRoot: BinaryTreeNode,
   nodeV: BinaryTreeNode,
   nodeW: BinaryTreeNode
-): BinaryTreeNode => {}
+): BinaryTreeNode => {
+  throw new Error('Not implemented')
+}
 
 const testTree1 = new BinaryTreeNode(undefined, undefined, 'x')
 
