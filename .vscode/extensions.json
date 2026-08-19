@@ -5,6 +5,6 @@
     "esbenp.prettier-vscode",
     "streetsidesoftware.code-spell-checker",
     "wallabyjs.quokka-vscode",
-    "vitest.explorer"
+    "VoidZero.vite-plus-extension-pack"
   ]
 }
