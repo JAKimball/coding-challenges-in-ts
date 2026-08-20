@@ -4,11 +4,14 @@ name: Prepare
 
 runs:
   steps:
-    - uses: pnpm/action-setup@v2
-    - uses: actions/setup-node@v3
+    - uses: pnpm/action-setup@v4
+    # Node version source of truth: package.json devEngines.runtime
+    - run: echo "node_version=$(node -p "require('./package.json').devEngines.runtime.version")" >> "$GITHUB_ENV"
+      shell: bash
+    - uses: actions/setup-node@v4
       with:
         cache: pnpm
-        node-version: '18'
+        node-version: ${{ env.node_version }}
     - run: pnpm install --frozen-lockfile
       shell: bash
   using: composite
