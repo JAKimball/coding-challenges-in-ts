@@ -77,13 +77,13 @@ mod10_2(4567825, 2) //?
 export function smallest(n: number): number[] {
   const digits = [...n.toFixed(0)].map(Number)
   const vTo = digits[0]
-  const iTo = 1
+  let iTo = 1
   const vFrom = vTo
   const iFrom = 0
 
   while (iTo < digits.length) {
     const v = digits[iTo]
-    console.log(v)
+    iTo++
     //   if (v < vMin) {
     //     vMin = v
     //     iMin = i
@@ -110,7 +110,6 @@ export function smallest(n: number): number[] {
     ...digits.slice(to, from),
     ...digits.slice(from + 1),
   ]
-  console.log(outDigits)
 
   return [+outDigits.join(''), from, to]
 }
