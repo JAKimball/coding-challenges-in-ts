@@ -39,14 +39,14 @@ class Actor {
 
   #moveByOne = (heading: Heading) => {
     switch (heading) {
+      case Heading.EAST:
+        this.knots[0].x++
+        break
       case Heading.NORTH:
         this.knots[0].y--
         break
       case Heading.SOUTH:
         this.knots[0].y++
-        break
-      case Heading.EAST:
-        this.knots[0].x++
         break
       case Heading.WEST:
         this.knots[0].x--

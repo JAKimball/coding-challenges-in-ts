@@ -3,50 +3,22 @@ import fs from 'fs'
 // Synchronously read our data file
 const input = fs.readFileSync('assets/aoc/2016/aoc2016-d1.txt', 'utf8')
 
-type Point = {
+interface Point {
   x: number
   y: number
 }
 
 enum Heading {
-  NORTH = 0,
   EAST = 1,
+  NORTH = 0,
   SOUTH = 2,
   WEST = 3,
 }
 
 class Actor {
-  location: Point = { x: 0, y: 0 }
-  heading: Heading = Heading.NORTH
-
-  turn = (direction: string) => {
-    switch (direction) {
-      case 'R':
-        this.heading = (this.heading + 1) % 4
-        break
-      case 'L':
-        this.heading = (this.heading + 3) % 4
-        break
-    }
+  executePlan = (plan: string) => {
+    plan.split(', ').forEach(this.executeStep)
   }
-
-  move = (distance: number) => {
-    switch (this.heading) {
-      case Heading.NORTH:
-        this.location.x += distance
-        break
-      case Heading.SOUTH:
-        this.location.x -= distance
-        break
-      case Heading.EAST:
-        this.location.y += distance
-        break
-      case Heading.WEST:
-        this.location.y -= distance
-        break
-    }
-  }
-
   executeStep = (step: string) => {
     const direction = step[0]
     const distance = parseInt(step.slice(1))
@@ -54,8 +26,36 @@ class Actor {
     this.move(distance)
   }
 
-  executePlan = (plan: string) => {
-    plan.split(', ').forEach(this.executeStep)
+  heading: Heading = Heading.NORTH
+
+  location: Point = { x: 0, y: 0 }
+
+  move = (distance: number) => {
+    switch (this.heading) {
+      case Heading.EAST:
+        this.location.y += distance
+        break
+      case Heading.NORTH:
+        this.location.x += distance
+        break
+      case Heading.SOUTH:
+        this.location.x -= distance
+        break
+      case Heading.WEST:
+        this.location.y -= distance
+        break
+    }
+  }
+
+  turn = (direction: string) => {
+    switch (direction) {
+      case 'L':
+        this.heading = (this.heading + 3) % 4
+        break
+      case 'R':
+        this.heading = (this.heading + 1) % 4
+        break
+    }
   }
 }
 

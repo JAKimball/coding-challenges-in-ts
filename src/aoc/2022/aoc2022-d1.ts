@@ -3,11 +3,11 @@ import fs from 'fs'
 // Synchronously read our data file
 const input = fs.readFileSync('assets/aoc/2022/aoc2022-d1.txt', 'utf8')
 
-type Elf = {
+interface Elf {
   totalCal: number
 }
 
-const elves: Array<Elf> = input.split('\n\n').map(value => ({
+const elves: Elf[] = input.split('\n\n').map(value => ({
   totalCal: value.split('\n').reduce((a, v) => a + parseInt(v), 0),
 }))
 

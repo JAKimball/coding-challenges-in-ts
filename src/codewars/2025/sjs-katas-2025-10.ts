@@ -24,7 +24,7 @@ const capitalWord = (word: string) => {
 }
 
 function generateHashtag(str: string) {
-  const words = str.match(/\w+/gm)
+  const words = str.match(/\w+/g)
   if (!words) return false
   const tag = words.map(capitalWord).join('')
   return tag.length >= 140 ? false : '#' + tag
@@ -37,7 +37,7 @@ generateHashtag(' Hello there thanks for trying my Kata') //?
  * https://www.codewars.com/kata/54e6533c92449cc251001667/train/typescript
  */
 
-export const uniqueInOrder = (iterable: string | (string | number)[]) =>
+export const uniqueInOrder = (iterable: (number | string)[] | string) =>
   [...iterable].filter((el, i, arr) => i === 0 || el !== arr[i - 1])
 
 // cspell:disable

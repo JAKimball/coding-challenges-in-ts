@@ -1,4 +1,4 @@
-import { describe, bench } from 'vitest'
+import { bench, describe } from 'vite-plus/test'
 import { digitCount } from './fib.js'
 describe('digitCount(n)', () => {
   bench('digitCount(9)', () => {

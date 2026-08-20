@@ -9,9 +9,9 @@ import { memoize } from '../../dp/memoize.js'
 
 export const fizzBuzz = (n: number) => {
   n--
-  let m15 = (n / 15) | 0
-  let m3 = ((n / 3) | 0) - m15
-  let m5 = ((n / 5) | 0) - m15
+  const m15 = (n / 15) | 0
+  const m3 = ((n / 3) | 0) - m15
+  const m5 = ((n / 5) | 0) - m15
 
   return [m3, m5, m15]
 }
@@ -122,7 +122,7 @@ if (import.meta.vitest) {
 }
 // cspell:enable
 
-export const filter_list = (l: Array<any>) => l.filter(v => typeof v === 'number')
+export const filter_list = (l: any[]) => l.filter(v => typeof v === 'number')
 
 export const pigIt = (a: string) => a.replace(/\w+/g, s => s.slice(1) + s[0] + 'ay')
 

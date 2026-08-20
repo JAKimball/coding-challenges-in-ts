@@ -3,24 +3,24 @@ import path from 'path'
 import { v4 as uuidV4 } from 'uuid'
 
 interface ChatRequest {
-  timestamp?: number
   message?: {
     text?: string
   }
+  timestamp?: number
 }
 
 interface ChatSession {
-  version?: number
-  sessionId?: string
   creationDate?: number
+  customTitle?: string
   isImported?: boolean
   lastMessageDate?: number
-  customTitle?: string
   requests?: ChatRequest[]
+  sessionId?: string
+  version?: number
 }
 
-const getReferencedFsPathsFromJson = (input: Object) => {
-  const result: Set<string> = new Set()
+const getReferencedFsPathsFromJson = (input: object) => {
+  const result = new Set<string>()
 
   const recurse = (obj: any) => {
     if (typeof obj !== 'object' || obj === null) return
@@ -38,8 +38,8 @@ const getReferencedFsPathsFromJson = (input: Object) => {
   return [...result]
 }
 
-const getAllUniqueJSONPaths = (input: Object) => {
-  const result: Set<string> = new Set() // Use a Set to avoid duplicates
+const getAllUniqueJSONPaths = (input: object) => {
+  const result = new Set<string>() // Use a Set to avoid duplicates
 
   const recurse = (obj: any, stack: string[]) => {
     if (typeof obj !== 'object' || obj === null) return
@@ -57,7 +57,7 @@ const getAllUniqueJSONPaths = (input: Object) => {
 }
 
 const JsonTests = (jsonData: ChatSession[]) => {
-  const outputAllUniqueJSONPaths = (result: Array<string>) => {
+  const outputAllUniqueJSONPaths = (result: string[]) => {
     result.forEach(path => {
       console.log(path)
     })
@@ -66,7 +66,7 @@ const JsonTests = (jsonData: ChatSession[]) => {
   const result = getAllUniqueJSONPaths(jsonData)
   outputAllUniqueJSONPaths(result)
 
-  const outputJSONPaths = (result: Array<string>) => {
+  const outputJSONPaths = (result: string[]) => {
     result.forEach(path => {
       console.log(path)
     })
@@ -75,7 +75,7 @@ const JsonTests = (jsonData: ChatSession[]) => {
   const result1 = getAllMatchingJSONPaths(jsonData, 'uri')
   outputJSONPaths(result1)
 
-  const outputRefs = (result: Array<string>) => {
+  const outputRefs = (result: string[]) => {
     result.forEach(ref => {
       console.log(ref)
     })
@@ -87,8 +87,8 @@ const JsonTests = (jsonData: ChatSession[]) => {
   // jsonData[0].requests[0].contentReferences[0].reference.uri.fsPath //?
 }
 
-const getAllMatchingJSONPaths = (input: Object, key: string) => {
-  const result: Set<string> = new Set()
+const getAllMatchingJSONPaths = (input: object, key: string) => {
+  const result = new Set<string>()
 
   const recurse = (obj: any, stack: string[]) => {
     if (typeof obj !== 'object' || obj === null) return
@@ -144,7 +144,9 @@ const listRefsBySession = (chatSessions: ChatSession[]) => {
       console.log(`Session: "${name}"`)
       getReferencedFsPathsFromJson(session)
         .sort((a, b) => a.localeCompare(b))
-        .forEach(ref => console.log(`  ${ref}`))
+        .forEach(ref => {
+          console.log(`  ${ref}`)
+        })
     })
 }
 
@@ -166,14 +168,16 @@ const listSessionsByRef = (chatSessions: ChatSession[]) => {
     .sort(([refA], [refB]) => refA.localeCompare(refB))
     .forEach(([ref, sessions]) => {
       console.log(`Ref: ${ref}`)
-      sessions.forEach(([, name]) => console.log(`  Session: "${name}"`))
+      sessions.forEach(([, name]) => {
+        console.log(`  Session: "${name}"`)
+      })
     })
 }
 
 const fileNameFromSessionName = (sessionName: string) => {
   return sessionName
     .replace(/ /g, '-')
-    .replace(/[^a-zA-Z0-9-]/g, '')
+    .replace(/[^a-z0-9-]/gi, '')
     .toLowerCase()
 }
 
@@ -224,9 +228,9 @@ const generateSessionMetadata = (session: ChatSession, fallbackTime: number): Ch
   const timestamps = requests.map(req => req.timestamp).filter((t): t is number => t !== undefined)
 
   const metadata: Partial<ChatSession> = {
-    sessionId: session.sessionId || uuidV4(),
     creationDate: timestamps[0] || fallbackTime,
     lastMessageDate: timestamps[timestamps.length - 1] || fallbackTime,
+    sessionId: session.sessionId || uuidV4(),
   }
 
   // Let existing session properties take precedence over generated metadata

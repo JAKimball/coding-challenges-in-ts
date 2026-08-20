@@ -62,7 +62,7 @@ if (import.meta.vitest) {
 				"|       ↓" + "\n" +
 				"|-----> C" + "\n"
 
-			const E = new Node('E'), D = new Node('D'), C = new Node('C')
+			const C = new Node('C'), D = new Node('D'), E = new Node('E')
 			const B = new Node('B', [C, D])
 			const A = new Node('A', [B, C])
 

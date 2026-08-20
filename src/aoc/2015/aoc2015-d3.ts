@@ -3,7 +3,7 @@ import fs from 'fs'
 // Synchronously read our data file
 const input = fs.readFileSync('assets/aoc/2015/aoc2015-d3.txt', 'utf8')
 
-type Point = {
+interface Point {
   x: number
   y: number
 }
@@ -30,14 +30,14 @@ const hereBefore = () => {
 
 const move = (heading: Heading, distance = 1) => {
   switch (heading) {
+    case Heading.EAST:
+      location.y += distance
+      break
     case Heading.NORTH:
       location.x += distance
       break
     case Heading.SOUTH:
       location.x -= distance
-      break
-    case Heading.EAST:
-      location.y += distance
       break
     case Heading.WEST:
       location.y -= distance

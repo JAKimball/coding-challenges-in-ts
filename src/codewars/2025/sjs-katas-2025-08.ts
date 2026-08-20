@@ -78,13 +78,13 @@ const cheapFibR = (n: number) => ϕ ** n * sqrt5R
 const quickFibR = (n: number) => Math.round(ϕ ** n * sqrt5R)
 
 // Select our fastest Fibonacci function
-let fib = fib_memoByArray
+const fib = fib_memoByArray
 
 const LN_PHI = Math.log(ϕ)
 export const productFib = (prod: number): [number, number, boolean] => {
-  let real_n = Math.log(prod * 5) / LN_PHI
-  let n1 = Math.round((real_n - 1) / 2)
-  let n2 = n1 + 1
+  const real_n = Math.log(prod * 5) / LN_PHI
+  const n1 = Math.round((real_n - 1) / 2)
+  const n2 = n1 + 1
   let [a, b] = [fib(n1), fib(n2)]
   ;[a, b] = prod > a * b ? [b, a + b] : [a, b]
   return [a, b, a * b === prod]
@@ -92,9 +92,9 @@ export const productFib = (prod: number): [number, number, boolean] => {
 
 const LN2_PHI = Math.log2(ϕ)
 export const productFib_LN2 = (prod: number): [number, number, boolean] => {
-  let real_n = Math.log2(prod * 5) / LN2_PHI
-  let n1 = Math.round((real_n - 1) / 2)
-  let n2 = n1 + 1
+  const real_n = Math.log2(prod * 5) / LN2_PHI
+  const n1 = Math.round((real_n - 1) / 2)
+  const n2 = n1 + 1
   let [a, b] = [fib(n1), fib(n2)]
   ;[a, b] = prod > a * b ? [b, a + b] : [a, b]
   return [a, b, a * b === prod]
@@ -102,9 +102,9 @@ export const productFib_LN2 = (prod: number): [number, number, boolean] => {
 
 const LN10_PHI = Math.log10(ϕ)
 export const productFib_LN10 = (prod: number): [number, number, boolean] => {
-  let real_n = Math.log10(prod * 5) / LN10_PHI
-  let n1 = Math.round((real_n - 1) / 2)
-  let n2 = n1 + 1
+  const real_n = Math.log10(prod * 5) / LN10_PHI
+  const n1 = Math.round((real_n - 1) / 2)
+  const n2 = n1 + 1
   let [a, b] = [fib(n1), fib(n2)]
   ;[a, b] = prod > a * b ? [b, a + b] : [a, b]
   return [a, b, a * b === prod]
@@ -141,11 +141,11 @@ function productFib_AdrianB(prod: number): [number, number, boolean] {
   let firstTerm = 0
   let secondTerm = 1
   while (firstTerm * secondTerm < prod) {
-    let nextTerm = firstTerm + secondTerm // Calculate next term in Fibonacci sequence
+    const nextTerm = firstTerm + secondTerm // Calculate next term in Fibonacci sequence
     firstTerm = secondTerm // Move these two terms up, as they will used for next calculation
     secondTerm = nextTerm
   }
-  let isEqualToProduct = firstTerm * secondTerm === prod
+  const isEqualToProduct = firstTerm * secondTerm === prod
   return [firstTerm, secondTerm, isEqualToProduct]
 }
 
@@ -170,23 +170,23 @@ fib(bigN) //?
 const ratioF = fib(bigN) / ϕ ** bigN //?
 1 / Math.sqrt(5) //?
 
-let prod = 4896
-let realX = Math.log(prod * 5) / LN_PHI //?
+const prod = 4896
+const realX = Math.log(prod * 5) / LN_PHI //?
 // let nx = Math.ceil(realX) //?
-let nx = Math.round(realX) //?
+const nx = Math.round(realX) //?
 // let nx = realX //?
-let dx = realX - nx //?
+const dx = realX - nx //?
 nx % 2 !== 0 //?
 ψ ** nx //?
-let test = ϕ ** nx / 5 //?
-let pow = ϕ ** nx //?
+const test = ϕ ** nx / 5 //?
+const pow = ϕ ** nx //?
 
-let n1 = Math.round((realX - 1) / 2)
-let n2 = n1 + 1
-let test2 = (ϕ ** n1 * ϕ ** n2) / 5 //?
-let test3 = (ϕ ** n1 / sqrt5) * (ϕ ** n2 / sqrt5) //?
-let test4 = cheapFibR(n1) * cheapFibR(n2) //?
-let test5 = closedFib(n1) * closedFib(n2) //?
+const n1 = Math.round((realX - 1) / 2)
+const n2 = n1 + 1
+const test2 = (ϕ ** n1 * ϕ ** n2) / 5 //?
+const test3 = (ϕ ** n1 / sqrt5) * (ϕ ** n2 / sqrt5) //?
+const test4 = cheapFibR(n1) * cheapFibR(n2) //?
+const test5 = closedFib(n1) * closedFib(n2) //?
 console.log(n1, n2)
 let [f1, f2] = [fib_memoByArray(n1), fib_memoByArray(n2)]
 ;[f1, f2] = prod > f1 * f2 ? [f2, fib_memoByArray(n2 + 1)] : [f1, f2]
@@ -197,16 +197,16 @@ console.log(fib_memoByArray(n1), fib_memoByArray(n2))
 console.log(quickFibR(n1), quickFibR(n2))
 
 ϕ
-let ratio = Number(fib(n + 1)) / Number(fib(n))
+const ratio = Number(fib(n + 1)) / Number(fib(n))
 console.log(ratio)
 console.log(ratio === ϕ)
 
 fib1(4) //?
 fib_memoByArray(70) //?
 
-function compareFib(FibFunc: (n: number) => number | bigint, n: number, iterations?: number) {
+function compareFib(FibFunc: (n: number) => bigint | number, n: number, iterations?: number) {
   const start1 = performance.now()
-  let f = FibFunc(n) // First iteration outside of loop will initialize the result type
+  const f = FibFunc(n) // First iteration outside of loop will initialize the result type
   for (let i = 1; i < (iterations ?? 1000); i++) {
     FibFunc(n) // Run the function multiple times to measure performance
   }
@@ -216,7 +216,7 @@ function compareFib(FibFunc: (n: number) => number | bigint, n: number, iteratio
   // to the best of our ability given the limited precision of JavaScript numbers
   // versus the bigint type.
   const fBigInt: bigint = fibBigInt(n)
-  const testPassed = (testValue: number | bigint) => {
+  const testPassed = (testValue: bigint | number) => {
     if (typeof testValue === 'bigint') {
       return testValue === fBigInt
     } else {
@@ -224,14 +224,14 @@ function compareFib(FibFunc: (n: number) => number | bigint, n: number, iteratio
     }
   }
 
-  const passStr = (testValue: number | bigint) => (testPassed(testValue) ? 'PASSED' : 'FAILED')
+  const passStr = (testValue: bigint | number) => (testPassed(testValue) ? 'PASSED' : 'FAILED')
   console.log(`${passStr(f)} ${FibFunc.name}(${n}) = ${f}, time: ${end1 - start1} ms`)
 
   return testPassed(f)
 }
 
 const findTestIterationCountRecommendation = (
-  FibFunc: (n: number) => number | bigint,
+  FibFunc: (n: number) => bigint | number,
   n: number,
   trialIterations: number = 1_000
 ) => {
@@ -306,7 +306,7 @@ function compareAllFibOf(n: number, iterations: number = 1_000) {
 const runPerformanceTests_fibonacci = () => {
   // Determine a reasonable number of iterations to run for timing tests
   console.log('\nDetermining a reasonable number of iterations for timing tests...')
-  let iterations = (function () {
+  const iterations = (function () {
     const fib_suite = [
       fibBigInt,
       fibBigInt2,
@@ -356,7 +356,7 @@ const productFib_suite = [
 const runPerformanceTests_productFib = () => {
   // Determine a reasonable number of iterations to run for timing tests
   console.log('\nDetermining a reasonable number of iterations for timing tests...')
-  let iterations = (function () {
+  const iterations = (function () {
     const n = 70
 
     let result = +Infinity

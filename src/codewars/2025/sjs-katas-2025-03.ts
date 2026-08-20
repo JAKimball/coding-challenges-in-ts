@@ -20,7 +20,7 @@ const getLastDigit = (index: number) => {
   return a
 }
 
-let PISANO_PERIOD: number[] = []
+const PISANO_PERIOD: number[] = []
 
 ;(() => {
   let [a, b] = [0, 1]

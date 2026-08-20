@@ -43,8 +43,8 @@ if (import.meta.vitest) {
  */
 
 enum Category {
-  Senior = 'Senior',
   Open = 'Open',
+  Senior = 'Senior',
 }
 
 export const openOrSenior = (data: number[][]) =>

@@ -14,25 +14,60 @@ while (input[input.length - 1] === '') {
   input.pop()
 }
 
-const monkeys: Array<Monkey> = []
+const monkeys: Monkey[] = []
 let monkeyTestDivisorLCM = 1
 
 enum Operator {
   ADD = '+',
-  SUBTRACT = '-',
-  MULTIPLY = '*',
   DIVIDE = '/',
+  MULTIPLY = '*',
+  SUBTRACT = '-',
 }
 
 class Monkey {
-  monkeyNumber: number
-  items: Array<number>
-  operationOperator: Operator
-  operationParam: number | undefined // undefined for "old"
-  testDivisor: number
-  trueThrow: number
+  #processNextItem = () => {
+    this.inspectionCount++
+    let worry = this.items.shift() as number
+    const param = this.operationParam ?? worry // undefined for "old"
+    switch (this.operationOperator) {
+      case Operator.ADD:
+        worry += param
+        break
+      case Operator.DIVIDE:
+        worry /= param
+        break
+      case Operator.MULTIPLY:
+        worry *= param
+        break
+      case Operator.SUBTRACT:
+        worry -= param
+        break
+    }
+    // if (worry > Number.MAX_SAFE_INTEGER) console.warn('MAX_SAFE_INTEGER exceeded!')
+    worry = Math.floor(worry / this.worryDivisor)
+    worry = worry % monkeyTestDivisorLCM
+    // The test
+    monkeys[worry % this.testDivisor === 0 ? this.trueThrow : this.falseThrow].catchItem(worry)
+  }
+  catchItem = (item: number) => {
+    this.items.push(item)
+  }
   falseThrow: number
   inspectionCount = 0
+  items: number[]
+  monkeyNumber: number
+  operationOperator: Operator
+  operationParam: number | undefined // undefined for "old"
+  processTurn = () => {
+    while (this.items.length) {
+      this.#processNextItem()
+    }
+  }
+
+  testDivisor: number
+
+  trueThrow: number
+
   worryDivisor = 3
 
   constructor(str: string, worryDivisor = 3) {
@@ -46,41 +81,6 @@ class Monkey {
     this.trueThrow = lib.ints(lines[4])[0]
     this.falseThrow = lib.ints(lines[5])[0]
     this.worryDivisor = worryDivisor
-  }
-
-  catchItem = (item: number) => {
-    this.items.push(item)
-  }
-
-  #processNextItem = () => {
-    this.inspectionCount++
-    let worry = this.items.shift() as number
-    const param = this.operationParam ?? worry // undefined for "old"
-    switch (this.operationOperator) {
-      case Operator.ADD:
-        worry += param
-        break
-      case Operator.SUBTRACT:
-        worry -= param
-        break
-      case Operator.MULTIPLY:
-        worry *= param
-        break
-      case Operator.DIVIDE:
-        worry /= param
-        break
-    }
-    // if (worry > Number.MAX_SAFE_INTEGER) console.warn('MAX_SAFE_INTEGER exceeded!')
-    worry = Math.floor(worry / this.worryDivisor)
-    worry = worry % monkeyTestDivisorLCM
-    // The test
-    monkeys[worry % this.testDivisor === 0 ? this.trueThrow : this.falseThrow].catchItem(worry)
-  }
-
-  processTurn = () => {
-    while (this.items.length) {
-      this.#processNextItem()
-    }
   }
 }
 

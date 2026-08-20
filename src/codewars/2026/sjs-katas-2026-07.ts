@@ -71,19 +71,19 @@ export class PaginationHelper {
     return Math.ceil(this._itemCount / this._itemsPerPage)
   }
 
+  public pageIndex(itemIndex: number): number {
+    // determines what page an item is on. Zero based indexes
+    // this method should return -1 for itemIndex values that are out of range
+    if (itemIndex < 0 || itemIndex >= this._itemCount) return -1
+    return Math.floor(itemIndex / this._itemsPerPage)
+  }
+
   public pageItemCount(pageIndex: number): number {
     // returns the number of items on the current page. page_index is zero based.
     // this method should return -1 for pageIndex values that are out of range
     if (pageIndex < 0 || pageIndex >= this.pageCount()) return -1
     if (pageIndex === this.pageCount() - 1) return ((this._itemCount - 1) % this._itemsPerPage) + 1
     else return this._itemsPerPage
-  }
-
-  public pageIndex(itemIndex: number): number {
-    // determines what page an item is on. Zero based indexes
-    // this method should return -1 for itemIndex values that are out of range
-    if (itemIndex < 0 || itemIndex >= this._itemCount) return -1
-    return Math.floor(itemIndex / this._itemsPerPage)
   }
 }
 

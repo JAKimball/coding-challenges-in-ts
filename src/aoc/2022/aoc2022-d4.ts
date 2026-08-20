@@ -4,13 +4,13 @@ import fs from 'fs'
 const rawInput = fs.readFileSync('assets/aoc/2022/aoc2022-d4.txt', 'utf8')
 const input = rawInput.split('\n')
 
-type Range = {
-  lo: number
+interface Range {
   hi: number
+  lo: number
 }
 
 const parseRange = (raw: string): Range => {
-  const range: Range = { lo: 0, hi: 0 }
+  const range: Range = { hi: 0, lo: 0 }
   ;[range.lo, range.hi] = raw.split('-').map(Number)
   return range
 }

@@ -25,5 +25,8 @@
   "testing.automaticallyOpenPeekView": "never",
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
-  }
+  },
+  "oxc.enable": false,
+  "oxc.enable.oxlint": false,
+  "oxc.lint.run": "onSave"
 }

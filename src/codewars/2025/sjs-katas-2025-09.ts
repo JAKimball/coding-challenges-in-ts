@@ -13,8 +13,8 @@ export const removeDuplicateWords_golf = (s: string) => [...new Set(s.split(' ')
 // ==========
 
 export function sortMyString(s: string): string {
-  let evens: string[] = []
-  let odds: string[] = []
+  const evens: string[] = []
+  const odds: string[] = []
 
   for (let i = 0; i < s.length; i++) {
     if (i % 2) odds.push(s[i])
@@ -26,7 +26,7 @@ export function sortMyString(s: string): string {
 
 // ==========
 
-export function comp(a1: number[] | null, a2: number[] | null): boolean {
+export function comp(a1: null | number[], a2: null | number[]): boolean {
   if (!a1 || !a2) return false
   if (a1.length !== a2.length) return false
 
@@ -40,7 +40,7 @@ export function comp(a1: number[] | null, a2: number[] | null): boolean {
   return true
 }
 
-export function comp_fromArray(a1: number[] | null, a2: number[] | null): boolean {
+export function comp_fromArray(a1: null | number[], a2: null | number[]): boolean {
   if (!a1 || !a2) return false
   if (a1.length !== a2.length) return false
 
@@ -75,11 +75,11 @@ mod10(4567825, 2) //?
 mod10_2(4567825, 2) //?
 
 export function smallest(n: number): number[] {
-  let digits = [...n.toFixed(0)].map(Number)
-  let vTo = digits[0]
-  let iTo = 1
-  let vFrom = vTo
-  let iFrom = 0
+  const digits = [...n.toFixed(0)].map(Number)
+  const vTo = digits[0]
+  const iTo = 1
+  const vFrom = vTo
+  const iFrom = 0
 
   while (iTo < digits.length) {
     const v = digits[iTo]
@@ -93,8 +93,8 @@ export function smallest(n: number): number[] {
     //   }
   }
 
-  let from = 0
-  let to = 0
+  const from = 0
+  const to = 0
 
   // console.log(iMin, i2nd)
   // if (iMin === 0) {
@@ -104,7 +104,7 @@ export function smallest(n: number): number[] {
   // }
   // console.log(from, to)
 
-  let outDigits = [
+  const outDigits = [
     ...digits.slice(0, to),
     digits[from],
     ...digits.slice(to, from),
@@ -143,9 +143,9 @@ if (import.meta.vitest) {
     })
   })
 
-  function testing(a1: number[] | null, a2: number[] | null, expected: boolean) {
-    var s1 = ''
-    var s2 = ''
+  function testing(a1: null | number[], a2: null | number[], expected: boolean) {
+    let s1 = ''
+    let s2 = ''
     if (a1 !== null) s1 = a1.toString()
     else s1 = 'null'
     if (a2 !== null) s2 = a2.toString()
@@ -155,8 +155,8 @@ if (import.meta.vitest) {
 
   describe('Fixed Tests comp', function () {
     it('Basic tests', function () {
-      var a1: number[] = [121, 144, 19, 161, 19, 144, 19, 11]
-      var a2: number[] = [
+      let a1: number[] = [121, 144, 19, 161, 19, 144, 19, 11]
+      let a2: number[] = [
         11 * 11,
         121 * 121,
         144 * 144,

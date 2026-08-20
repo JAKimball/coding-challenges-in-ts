@@ -25,9 +25,9 @@ winRules.add('SP')
 winRules.add('PR')
 
 enum RoundOutcome {
-  WIN = 6,
-  LOSE = 0,
   DRAW = 3,
+  LOSE = 0,
+  WIN = 6,
 }
 
 const roundOutcome = (opponentsPlay: string, yourPlay: string): RoundOutcome => {

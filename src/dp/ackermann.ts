@@ -2,9 +2,9 @@ import { memoize } from './memoize.js'
 
 type AckermannFunction = (m: number, n: bigint) => bigint
 
-type CountedFunction<F> = F & {
+type CountedFunction<F> = {
   callCount: number
-}
+} & F
 
 export const ackermann: CountedFunction<AckermannFunction> = ((m: number, n: bigint) => {
   ackermann.callCount++
@@ -16,8 +16,8 @@ ackermann.callCount = 0
 
 export const ackermann_m = memoize((m: number, n: bigint): bigint => {
   if (m === 0) return n + 1n
-  if (n === 0n) return ackermann_m(m - 1, 1n) as bigint
-  return ackermann_m(m - 1, ackermann_m(m, n - 1n)) as bigint
+  if (n === 0n) return ackermann_m(m - 1, 1n)
+  return ackermann_m(m - 1, ackermann_m(m, n - 1n))
 })
 
 export const ackermann_test = (ackermann: AckermannFunction) => {

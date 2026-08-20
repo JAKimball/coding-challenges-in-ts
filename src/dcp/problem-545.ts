@@ -5,16 +5,16 @@
  * @param {Array<number>} list
  * @returns
  */
-function longestConsecutiveRun(list: Array<number>) {
-  const map: Map<number, number> = new Map()
+function longestConsecutiveRun(list: number[]) {
+  const map = new Map<number, number>()
   let maxLen = 0
   let maxFirst = 0
   let maxLast = 0
 
   for (const x of list) {
     if (map.has(x)) continue
-    let first = map.get(x - 1) ?? x
-    let last = map.get(x + 1) ?? x
+    const first = map.get(x - 1) ?? x
+    const last = map.get(x + 1) ?? x
     map.set(x, x)
     map.set(first, last)
     map.set(last, first)
@@ -24,10 +24,10 @@ function longestConsecutiveRun(list: Array<number>) {
       maxLast = last
     }
   }
-  return { maxLen, maxFirst, maxLast }
+  return { maxFirst, maxLast, maxLen }
 }
 
-let rl = longestConsecutiveRun([8, 1, 3, 7, 4, 19, 6, 9, 15, 5, 7])
+const rl = longestConsecutiveRun([8, 1, 3, 7, 4, 19, 6, 9, 15, 5, 7])
 rl
 
 /**
@@ -36,12 +36,12 @@ rl
  * @param {number} rangeSize
  */
 function superTest(rangeSize: number) {
-  const list: Array<number> = new Array()
+  const list = new Array<number>()
   let [len, first, last] = [0, 0, 0]
 
   do {
     list.push(Math.floor(Math.random() * rangeSize))
-    ;({ maxLen: len, maxFirst: first, maxLast: last } = longestConsecutiveRun(list))
+    ;({ maxFirst: first, maxLast: last, maxLen: len } = longestConsecutiveRun(list))
     console.log(`list length: ${list.length}  longest run -> ${first}..${last} length: ${len}`)
   } while (len < rangeSize)
 }
@@ -50,13 +50,13 @@ superTest(100)
 
 // This should be in cursive!
 
-const showList = (list: Array<number>) =>
+const showList = (list: number[]) =>
   list.reduce<string>((p, c) => (p ? `${p}, ` : '') + c.toString(), '')
 console.log(showList([1, 2, 3]))
 
 const swapAltBits = (x: number) => ((x & 0b01010101) << 1) | ((x & 0b10101010) >>> 1)
 
-let b = swapAltBits(0b01100110).toString(2).padStart(8, '0')
+const b = swapAltBits(0b01100110).toString(2).padStart(8, '0')
 b
 
 const testSwapAltBits = () => {
@@ -67,7 +67,7 @@ const testSwapAltBits = () => {
   return i === 0b100000000
 }
 
-let passed = testSwapAltBits()
+const passed = testSwapAltBits()
 passed
 
 //=============================================
@@ -88,8 +88,8 @@ passed
 
 class BinaryTreeNode {
   left?: BinaryTreeNode
-  right?: BinaryTreeNode
   parent?: BinaryTreeNode
+  right?: BinaryTreeNode
   value: any
 
   constructor(left?: BinaryTreeNode, right?: BinaryTreeNode, value?: any) {
@@ -114,7 +114,7 @@ const testTree1 = new BinaryTreeNode(undefined, undefined, 'x')
 
 function printBinaryTree(treeRoot: BinaryTreeNode) {
   const queue = []
-  let node = treeRoot
+  const node = treeRoot
   while (node) {}
 }
 

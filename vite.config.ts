@@ -1,19 +1,40 @@
 import { defineConfig } from 'vite-plus'
 
 export default defineConfig({
+  fmt: {
+    arrowParens: 'avoid',
+    bracketSpacing: true,
+    ignorePatterns: ['coverage*/', 'lib/', 'pnpm-lock.yaml', '.all-contributorsrc'],
+    'plugins-comments': {
+      removed: ['prettier-plugin-curly'],
+      see: ['https://github.com/JoshuaKGoldberg/prettier-plugin-curly'],
+    },
+    printWidth: 100,
+    semi: false,
+    singleQuote: true,
+    sortPackageJson: {},
+    tabWidth: 2,
+    trailingComma: 'es5',
+    useTabs: false,
+  },
   lint: {
-    plugins: ['oxc', 'typescript', 'unicorn', 'react'],
     categories: {
       correctness: 'warn',
-    },
-    options: {
-      typeAware: true,
-      typeCheck: true,
     },
     env: {
       builtin: true,
     },
     ignorePatterns: ['coverage*/**', 'lib/**', 'pnpm-lock.yaml'],
+    jsPlugins: [
+      {
+        name: 'vite-plus',
+        specifier: 'vite-plus/oxlint-plugin',
+      },
+    ],
+    options: {
+      typeAware: true,
+      typeCheck: true,
+    },
     overrides: [
       {
         files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
@@ -559,6 +580,15 @@ export default defineConfig({
         plugins: ['jsdoc'],
       },
       {
+        // Practice-repo idioms: bare REPL-style output expressions and
+        // partially-unused `import.meta.vitest` destructures in in-source tests.
+        files: ['src/**'],
+        rules: {
+          'no-unused-expressions': 'off',
+          'no-unused-vars': 'error',
+        },
+      },
+      {
         files: ['**/*.test.ts'],
         rules: {
           'vitest/expect-expect': 'error',
@@ -682,30 +712,9 @@ export default defineConfig({
         jsPlugins: ['eslint-plugin-yml'],
       },
     ],
-    jsPlugins: [
-      {
-        name: 'vite-plus',
-        specifier: 'vite-plus/oxlint-plugin',
-      },
-    ],
+    plugins: ['oxc', 'typescript', 'unicorn', 'react'],
     rules: {
       'vite-plus/prefer-vite-plus-imports': 'error',
     },
-  },
-  fmt: {
-    'plugins-comments': {
-      removed: ['prettier-plugin-curly'],
-      see: ['https://github.com/JoshuaKGoldberg/prettier-plugin-curly'],
-    },
-    trailingComma: 'es5',
-    useTabs: false,
-    tabWidth: 2,
-    semi: false,
-    singleQuote: true,
-    printWidth: 100,
-    arrowParens: 'avoid',
-    bracketSpacing: true,
-    sortPackageJson: {},
-    ignorePatterns: ['coverage*/', 'lib/', 'pnpm-lock.yaml', '.all-contributorsrc'],
   },
 })

@@ -4,9 +4,9 @@ import fs from 'fs'
 const input = fs.readFileSync('assets/aoc/2022/aoc2022-d2.txt', 'utf8')
 
 enum RoundOutcome {
-  WIN = 6,
-  LOSE = 0,
   DRAW = 3,
+  LOSE = 0,
+  WIN = 6,
 }
 
 const shapeScore = new Map()
@@ -29,10 +29,10 @@ const playForOutcome = (opponentsPlay: string, outcome: RoundOutcome) => {
     return opponentsPlay
   }
   switch (opponentsPlay) {
-    case 'R':
-      return outcome === RoundOutcome.WIN ? 'P' : 'S'
     case 'P':
       return outcome === RoundOutcome.WIN ? 'S' : 'R'
+    case 'R':
+      return outcome === RoundOutcome.WIN ? 'P' : 'S'
     case 'S':
       return outcome === RoundOutcome.WIN ? 'R' : 'P'
   }

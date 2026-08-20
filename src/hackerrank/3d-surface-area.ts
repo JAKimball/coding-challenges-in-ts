@@ -85,8 +85,8 @@ const surfaceArea_Optimized: SAFunction = (board: Board) => {
   result += lastHeight
 
   for (let i = 1; i < H; i++) {
-    let prevRow = board[i - 1]
-    let currentRow = board[i]
+    const prevRow = board[i - 1]
+    const currentRow = board[i]
     lastHeight = 0
     for (let j = 0; j < W; j++) {
       const currentHeight = currentRow[j]
@@ -167,7 +167,9 @@ const doTest = (board: Board, shouldBe: number, testIterations: number = TEST_IT
 }
 
 const testBoards = (testBoardData: boardTest[]) => {
-  testBoardData.forEach(test => doTest(test[0], test[1]))
+  testBoardData.forEach(test => {
+    doTest(test[0], test[1])
+  })
 }
 
 testBoards(testBoardData)

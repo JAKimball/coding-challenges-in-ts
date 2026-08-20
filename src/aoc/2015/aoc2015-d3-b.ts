@@ -36,14 +36,14 @@ class Actor {
 
   move(heading: Heading, distance = 1) {
     switch (heading) {
+      case Heading.EAST:
+        this.location.y += distance
+        break
       case Heading.NORTH:
         this.location.x += distance
         break
       case Heading.SOUTH:
         this.location.x -= distance
-        break
-      case Heading.EAST:
-        this.location.y += distance
         break
       case Heading.WEST:
         this.location.y -= distance

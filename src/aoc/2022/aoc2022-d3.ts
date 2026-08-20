@@ -19,7 +19,7 @@ input.split('\n').forEach(rs => {
   const midPoint = rs.length / 2
   let i = midPoint
   while (i--) {
-    if (rs.indexOf(rs[i], midPoint) !== -1) {
+    if (rs.includes(rs[i], midPoint)) {
       totalPriority += itemPriority(rs[i])
       return
     }
@@ -33,11 +33,11 @@ totalPriority = 0
 const commonLetters = (st1: string, st2: string) => {
   let result = ''
   for (let i = 0; i < st1.length; i++) {
-    if (st2.indexOf(st1[i]) !== -1) {
+    if (st2.includes(st1[i])) {
       result += st1[i]
     }
   }
-  if (st2.indexOf(st1[i]) !== -1) {
+  if (st2.includes(st1[i])) {
     result += st1[i]
   }
   return result

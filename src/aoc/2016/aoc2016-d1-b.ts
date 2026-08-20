@@ -3,26 +3,29 @@ import fs from 'fs'
 // Synchronously read our data file
 const input = fs.readFileSync('assets/aoc/2016/aoc2016-d1.txt', 'utf8')
 
-type Point = {
+interface Point {
   x: number
   y: number
 }
 
 enum Heading {
-  NORTH = 0,
   EAST = 1,
+  NORTH = 0,
   SOUTH = 2,
   WEST = 3,
 }
 
 class Actor {
-  location: Point = { x: 0, y: 0 }
-  heading: Heading = Heading.NORTH
-  memory: Set<string> = new Set()
-
-  constructor() {
-    this.hereBefore() // register the origin as visited
+  executePlan = (plan: string) => {
+    plan.split(', ').some(this.executeStep) // execute until any past location is re-visited
   }
+  executeStep = (step: string): boolean => {
+    const direction = step[0]
+    const distance = parseInt(step.slice(1))
+    this.turn(direction)
+    return this.moveWhileChecking(distance)
+  }
+  heading: Heading = Heading.NORTH
 
   hereBefore = () => {
     const locationKey = JSON.stringify(this.location)
@@ -33,27 +36,20 @@ class Actor {
     return false
   }
 
-  turn = (direction: string) => {
-    switch (direction) {
-      case 'R':
-        this.heading = (this.heading + 1) % 4
-        break
-      case 'L':
-        this.heading = (this.heading + 3) % 4
-        break
-    }
-  }
+  location: Point = { x: 0, y: 0 }
+
+  memory = new Set<string>()
 
   move = (distance = 1) => {
     switch (this.heading) {
+      case Heading.EAST:
+        this.location.y += distance
+        break
       case Heading.NORTH:
         this.location.x += distance
         break
       case Heading.SOUTH:
         this.location.x -= distance
-        break
-      case Heading.EAST:
-        this.location.y += distance
         break
       case Heading.WEST:
         this.location.y -= distance
@@ -71,15 +67,19 @@ class Actor {
     return false
   }
 
-  executeStep = (step: string): boolean => {
-    const direction = step[0]
-    const distance = parseInt(step.slice(1))
-    this.turn(direction)
-    return this.moveWhileChecking(distance)
+  turn = (direction: string) => {
+    switch (direction) {
+      case 'L':
+        this.heading = (this.heading + 3) % 4
+        break
+      case 'R':
+        this.heading = (this.heading + 1) % 4
+        break
+    }
   }
 
-  executePlan = (plan: string) => {
-    plan.split(', ').some(this.executeStep) // execute until any past location is re-visited
+  constructor() {
+    this.hereBefore() // register the origin as visited
   }
 }
 
