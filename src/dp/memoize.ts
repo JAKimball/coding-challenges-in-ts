@@ -10,9 +10,8 @@ type Memoized<A extends unknown[], R> = ((...args: A) => R) & {
 
 // To allow any bigint type arguments to be indexed in the map...
 // (see: https://github.com/GoogleChromeLabs/jsbi/issues/30)
-// oxlint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-;(BigInt.prototype as any).toJSON = function () {
-  return (this as bigint).toString()
+;(BigInt.prototype as unknown as { toJSON: () => string }).toJSON = function () {
+  return (this as unknown as bigint).toString()
 }
 
 /**

@@ -24,7 +24,7 @@ describe('greet', () => {
   })
 
   it('logs once when times is not provided in an object', () => {
-    const logger = vi.fn()
+    const logger = vi.fn<(message: string) => void>(() => undefined)
 
     greet({ logger, message })
 
@@ -33,7 +33,7 @@ describe('greet', () => {
   })
 
   it('logs a specified number of times when times is provided', () => {
-    const logger = vi.fn()
+    const logger = vi.fn<(message: string) => void>(() => undefined)
     const times = 7
 
     greet({ logger, message, times })
