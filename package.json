@@ -33,6 +33,7 @@
     "lint:packages": "pnpm dedupe --check",
     "lint:spelling": "cspell \"**\" \".github/**/*\"",
     "prepare": "husky",
+    "tsc": "tsc --noEmit",
     "test": "vp test"
   },
   "dependencies": {

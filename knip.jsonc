@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip/schema.json",
-  "entry": ["src/index.ts!", "script/*e2e.js"],
+  "entry": ["src/index.ts!"],
   "ignoreBinaries": ["dedupe", "gh"],
   "ignoreDependencies": [
     // TODO: investigate if these are still flagged, and file issues if not
