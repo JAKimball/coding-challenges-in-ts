@@ -1,32 +1,18 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true
   },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true
+  },
   "editor.formatOnSave": true,
-  "eslint.probe": [
-    "javascript",
-    "javascriptreact",
-    "json",
-    "jsonc",
-    "markdown",
-    "typescript",
-    "typescriptreact",
-    "yaml"
-  ],
-  "eslint.rules.customizations": [
-    {
-      "rule": "*",
-      "severity": "warn"
-    }
-  ],
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
   "github-actions.workflows.pinned.workflows": [],
   "testing.automaticallyOpenPeekView": "never",
-  "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  },
-  "oxc.enable": false,
-  "oxc.enable.oxlint": false,
+  "oxc.enable": true,
+  "oxc.enable.oxlint": true,
   "oxc.lint.run": "onSave"
 }

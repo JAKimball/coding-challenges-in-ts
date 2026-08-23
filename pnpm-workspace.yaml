@@ -13,6 +13,8 @@ catalog:
 overrides:
   vite: 'catalog:'
   vitest: 'catalog:'
+  # Force past vite-plus's =1.77.0 pin; disable_fix.rs panic fixed in oxlint 1.78.0
+  oxlint: '1.79.0'
 peerDependencyRules:
   allowAny:
     - vite
