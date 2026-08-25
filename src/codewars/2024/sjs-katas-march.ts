@@ -87,14 +87,16 @@ if (import.meta.vitest) {
 
     let string = ''
 
-    function printNode(node = tree, depth = 0) {
+    // NOTE: don't use a default parameter here — passing `undefined` for a
+    // missing child would re-bind `node` to the root and recurse forever.
+    function printNode(node: Node | null | undefined, depth: number) {
       if (!node) return
       string += '----'.repeat(depth) + node.value + '\n'
       printNode(node.left, depth + 1)
       printNode(node.right, depth + 1)
     }
 
-    printNode()
+    printNode(tree, 0)
     return string
   }
 

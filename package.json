@@ -24,7 +24,7 @@
     "provenance": true
   },
   "scripts": {
-    "devtest": "vp test --ui --open --api.port 32250",
+    "devtest": "vp test watch --ui --open --api.port 32250 --api.strictPort",
     "format": "vp fmt \"**/*\"",
     "format:write": "pnpm format --write",
     "lint": "vp lint . --max-warnings 0 --report-unused-disable-directives",
