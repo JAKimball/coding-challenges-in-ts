@@ -13,6 +13,5 @@
   "github-actions.workflows.pinned.workflows": [],
   "testing.automaticallyOpenPeekView": "never",
   "oxc.enable": true,
-  "oxc.enable.oxlint": true,
   "oxc.lint.run": "onSave"
 }

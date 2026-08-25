@@ -386,7 +386,12 @@ export default defineConfig({
         jsPlugins: [],
       },
       {
+        env: {
+          node: true,
+        },
         files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
+        jsPlugins: ['eslint-plugin-no-only-tests', 'eslint-plugin-perfectionist'],
+        plugins: ['import'],
         rules: {
           'import/extensions': ['error', 'ignorePackages'],
           'no-only-tests/no-only-tests': 'error',
@@ -418,11 +423,6 @@ export default defineConfig({
               type: 'natural',
             },
           ],
-        },
-        jsPlugins: ['eslint-plugin-no-only-tests', 'eslint-plugin-perfectionist'],
-        plugins: ['import'],
-        env: {
-          node: true,
         },
       },
       {
