@@ -3,7 +3,9 @@ name: Generate Repository Diagram
 on:
   push:
     branches:
-      - main # replace with your default branch if not 'main'
+      - main
+    paths-ignore:
+      - 'assets/images/diagram.svg'
 
 jobs:
   build:
@@ -12,8 +14,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.DIAGRAM_TOKEN }}
 
       - name: Generate diagram
         uses: githubocto/repo-visualizer@0.9.1
         with:
           output_file: ./assets/images/diagram.svg
+          token: ${{ secrets.DIAGRAM_TOKEN }}
