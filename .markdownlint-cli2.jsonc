@@ -6,4 +6,12 @@
     "sentences-per-line": true,
   },
   "customRules": ["sentences-per-line"],
+  "ignores": [
+    ".github/CODE_OF_CONDUCT.md",
+    "CHANGELOG.md",
+    "lib",
+    "node_modules",
+    "src/aoc/**/README.md",
+    "src/text/sample.md",
+  ],
 }

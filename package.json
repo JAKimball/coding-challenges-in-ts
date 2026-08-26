@@ -29,7 +29,7 @@
     "format:write": "pnpm format --write",
     "lint": "vp lint . --max-warnings 0 --report-unused-disable-directives",
     "lint:knip": "knip",
-    "lint:md": "markdownlint \"**/*.md\" \".github/**/*.md\" --rules sentences-per-line",
+    "lint:md": "markdownlint-cli2 \"**/*.md\" \".github/**/*.md\"",
     "lint:packages": "pnpm dedupe --check",
     "lint:spelling": "cspell \"**\" \".github/**/*\"",
     "prepare": "vp config --no-agent",
@@ -52,8 +52,7 @@
     "eslint-plugin-yml": "^1.19.1",
     "globals": "^17.11.0",
     "knip": "^5.88.1",
-    "markdownlint": "^0.34.0",
-    "markdownlint-cli": "^0.41.0",
+    "markdownlint-cli2": "^0.23.2",
     "sentences-per-line": "^0.2.2",
     "typescript": "^5.9.3",
     "vite": "catalog:",
@@ -67,5 +66,5 @@
       "onFail": "download"
     }
   },
-  "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee"
+  "packageManager": "pnpm@11.24.0+sha512.bd27e345e976dcb0be0b7a1228217b049a817e21b1f355c90dbe7dc46671895a8bc1e6d06c24554505ea93ea0b45f489a27ec1bfbc8de6a9659fca0f16fa0000"
 }
