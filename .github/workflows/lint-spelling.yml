@@ -3,8 +3,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/prepare
-      - run: pnpm lint:spelling
+
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version-file: package.json
+          cache: true
+          run-install: true
+
+
+      - run: vpr lint:spelling
 
 name: Lint spelling
 
