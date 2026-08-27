@@ -1,11 +1,20 @@
 {
   "$schema": "https://unpkg.com/knip/schema.json",
-  "entry": ["src/index.ts!"],
-  "ignoreBinaries": ["dedupe", "gh"],
+  "entry": [
+    "src/index.ts!",
+    "src/**/*.ts!"
+  ],
   "ignoreDependencies": [
-    // TODO: investigate if these are still flagged, and file issues if not
-    "all-contributors-cli",
-    "c8",
+    // Loaded dynamically by markdownlint-cli2 via customRules in
+    // .markdownlint-cli2.jsonc — Knip can't see that reference.
+    "sentences-per-line",
+    // Loaded dynamically as string specifiers in vite.config.ts `jsPlugins`
+    // (Vite+/oxlint integration) — Knip can't see those references.
+    "eslint-plugin-jsonc",
+    "eslint-plugin-no-only-tests",
+    "eslint-plugin-perfectionist",
+    "eslint-plugin-regexp",
+    "eslint-plugin-yml",
   ],
   "ignoreExportsUsedInFile": {
     "interface": true,
