@@ -46,6 +46,25 @@ release. Add a tool name to select part of the graph. For example, run
   `$HOME/.local/share/pnpm`. Sandboxed terminals may not see these paths; if a
   command fails with "command not found" or node-resolution errors, request
   unsandboxed execution rather than improvising PATH workarounds.
+- The GitHub CLI (`gh`) is **not authenticated** in agent terminals. If a `gh`
+  command fails with an auth prompt or "To get started with GitHub CLI" error,
+  do not retry or work around it — ask the user to run the command or paste the
+  output.
+
+## Long-running and interactive commands
+
+- Watch-mode scripts (`vpr devtest`) and dev servers must run as background
+  tasks, never as blocking terminal commands. Blocking on them hangs the
+  terminal and invites retry loops.
+- Commands that may trigger interactive prompts (Corepack version downloads,
+  pnpm confirmations) will hang silently. Set `CI=true` or pass the
+  non-interactive flag when running package-manager tooling.
+
+## Commits
+
+- Commit messages follow Conventional Commits (`feat:`, `fix:`, `chore:`,
+  `docs:`, ...). Draft commit messages when asked, but do not commit unless the
+  user explicitly asks for it.
 
 ## About this repo
 
