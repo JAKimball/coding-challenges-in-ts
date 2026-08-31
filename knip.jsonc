@@ -1,9 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip/schema.json",
-  "entry": [
-    "src/index.ts!",
-    "src/**/*.ts!"
-  ],
+  "entry": ["src/index.ts!", "src/**/*.ts!"],
   "ignoreDependencies": [
     // Loaded dynamically by markdownlint-cli2 via customRules in
     // .markdownlint-cli2.jsonc — Knip can't see that reference.
