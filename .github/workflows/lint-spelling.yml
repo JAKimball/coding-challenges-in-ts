@@ -13,7 +13,7 @@ jobs:
 
       - run: vpr lint:spelling
 
-name: Lint spelling
+name: Lint Spelling
 
 on:
   pull_request: ~
