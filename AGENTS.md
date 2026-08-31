@@ -1,4 +1,46 @@
-# Agent Guidance
+# AGENTS.md — Agent Instructions
+
+> **Revision:** 2026-08-31 · See [docs/doc-sync.md](docs/doc-sync.md) for the doc
+> revision log and conventions for keeping docs in sync with the codebase.
+
+Guidance for AI coding agents (GitHub Copilot, Claude Code, Codex, etc.)
+working in this repository — a coding-challenge and practice repo
+(Codewars, Advent of Code, etc.); see § About this repo below.
+
+---
+
+## Agent Terminal Rules (read before running any command)
+
+**[`docs/agent-terminal-rules.md`](docs/agent-terminal-rules.md) is mandatory
+reading before invoking node/pnpm/vp/vpr, git network commands, or `gh` in an
+agent terminal.** It is a distributed copy of the cross-project rules file
+(source of truth: `~/projects/agent-terminal-rules.md`; sync via
+`~/projects/sync-agent-rules.sh`). Every rule is empirically verified — most
+were learned by burning tool calls on the failure first.
+
+The rules most often violated under pressure, restated here for emphasis:
+
+1. **"command not found" does not mean absent.** The sandbox gates bare
+   invocations of known runtime/package-manager names (exit 127 even though
+   the binary exists). Verify with `ls`, then use the absolute path
+   (`~/.vite-plus/bin/...`). Never conclude a tool is missing from a 127.
+2. **PATH exports are a dead end.** `export PATH=...`, `env -i PATH=...`, and
+   inline `PATH=... cmd` prefixes do not reliably work in sandboxed terminals.
+   After ONE failed PATH attempt, switch to absolute paths or the documented
+   warm-up pattern — do not try another variant.
+3. **Deterministic failure ≠ timing issue.** A command failing instantly and
+   identically every time will not succeed on retry with a longer timeout.
+   Diagnose after the FIRST occurrence. After 2–3 failed attempts at the same
+   fix, stop, write a state summary, and check in with the user.
+4. **Network commands need `requestAllowNetwork` in the same call**
+   (`git push/fetch/pull`, `pnpm install`, `curl`). A sandboxed network
+   failure looks like a generic fetch error — don't debug it, re-run with the
+   flag.
+5. **`gh` is not authenticated in agent terminals** — never retry or work
+   around auth failures; ask the user to run the command.
+6. **Per-file lint checks use `vp lint <file>`, never `vpr lint <file>`** —
+   the npm script lints the whole project and ignores the path argument
+   (see § Lint verification and autofix below).
 
 <!--VITE PLUS START-->
 
@@ -147,34 +189,16 @@ just infrastructure. Distinguish between:
 - **Supporting code** (`src/dp/`, `src/text/`, `src/aoc/lib/`, tooling) — real
   code that should be linted, type-checked, and tested normally.
 
-## Troubleshooting discipline
-
-- Distinguish **deterministic failures** from **timing issues** before retrying.
-  A command that fails instantly and identically every time (e.g. `error:
-Cannot find binary path for command 'node'`) is not slow to start — retrying
-  with a longer timeout is pointless. Diagnose the error after the first
-  occurrence instead of assuming a startup-timing problem.
-- After one `command not found`, switch to the known-good pattern above — do
-  not try another PATH variant.
-- When a standard tool call fails unexpectedly, **stop and explain the failure
-  to the user before retrying**. Never launch into extended troubleshooting of
-  basic tooling that should just work.
-- Do not repeat failed strategies with minor variations (longer timeouts,
-  different prefixes). After one or two failures, step back, state the
-  hypothesis, and ask the user for advice or confirmation of their
-  environment.
-- The same applies at task level: after 2–3 failed attempts at the same fix,
-  stop, write a short state summary (what was tried, current hypothesis), and
-  check in with the user before continuing. It may also be appropriate to ask
-  another agent, perform a web search, or try a genuinely different approach —
-  as long as it actually breaks the loop rather than repeating it.
-- When an investigation has a finite, enumerable search space (storage
-  locations, config files, log folders), **write the enumeration script first
-  and run it once** instead of issuing exploratory commands one at a time.
-  Identical results must terminate the search, not trigger a re-run.
-
 ## Shareable rules
 
 The portable version of these rules — for use in other projects — lives at
 `docs/agent-terminal-rules.md`. Copy it into another project's `AGENTS.md` or
 `.github/copilot-instructions.md` as-is.
+
+## Documentation updates
+
+Keep docs in sync with the codebase per `docs/doc-sync.md`: update the doc's
+`Revision:` header on material changes, append repo-wide changes to its
+Revision Log, and check its sync checklist before creating new docs. This
+does not apply to `docs/agent-terminal-rules.md`, which has its own
+distributed-copy workflow (see § Shareable rules and that file's header).

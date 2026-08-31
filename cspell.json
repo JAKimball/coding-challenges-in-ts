@@ -1,5 +1,7 @@
 {
-  "dictionaries": ["typescript"],
+  "dictionaries": [
+    "typescript"
+  ],
   "ignorePaths": [
     "./coverage*",
     ".github",
@@ -27,6 +29,7 @@
     "copilotcli",
     "customendpoint",
     "customoai",
+    "dedup",
     "deepak",
     "deepseek",
     "destructures",
