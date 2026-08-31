@@ -212,7 +212,38 @@ access), check locations in this order:
 - If setup, runtime, or package-manager behavior looks wrong, run
   `vp env doctor` and include its output when asking for help.
 
-## 9. Meta-rules — editing and propagating THIS file
+## 9. Lint verification and autofix (Vite+/Oxlint projects)
+
+- **Per-file lint checks must use `vp lint <file>` (the built-in), never
+  `vpr lint <file>`.** `vpr lint` runs the npm script, which is typically
+  `vp lint . --max-warnings 0 ...` — the `.` lints the whole project and the
+  trailing path argument is effectively ignored. Verifying a single file's
+  cleanliness through `vpr lint <file>` can report 0 findings while the file
+  still has errors (observed: 39 real `sort-objects` errors invisible via
+  `vpr lint <file>` but shown by `vp lint <file>` and the VS Code Problems
+  panel). The Problems panel mirrors `vp lint`, so when editor and CLI
+  disagree, check which command the CLI actually ran.
+
+- **`--fix-suggestions` is not idempotent and does not converge in one
+  pass.** Re-sorting one object can expose new violations. Loop until the
+  error count reaches 0, checking with the same command that reports the
+  errors:
+
+  ```sh
+  until vp lint <file> 2>&1 | grep -q 'error'; do
+    vp lint --fix-suggestions <file> || break
+  done
+  ```
+
+  Observed: 39 errors needed 2+ passes; a single pass left 16. Review the
+  resulting diff — suggestion fixes can move comment-attached lines.
+
+- **`vp lint --fix` only applies safe fixes; `--fix-suggestions` applies
+  suggestion-level fixes** (e.g. `perfectionist/sort-objects`), which oxlint
+  documents as "may change program behavior". Sort rules are safe for plain
+  object literals but always eyeball the diff.
+
+## 10. Meta-rules — editing and propagating THIS file
 
 This file is a distributed copy managed by `~/projects/sync-agent-rules.sh`
 (itself Stow-installed from the wsl-ubuntu-config-private repo). The
@@ -222,13 +253,21 @@ workflows:
   `~/projects/sync-agent-rules.sh --begin <repo-path>` from the repo you
   want to edit in. It verifies no lock is held, the worktree is clean, and
   the repo copy matches central (footer-stripped) — refusing with backups
-  on divergence. Then edit `<repo>/docs/agent-terminal-rules.md`, and run
-  `~/projects/sync-agent-rules.sh --finish` to promote the edit to central,
-  re-stamp, and propagate to all other repos. It prints (does not run) the
-  commit command for the editing repo.
+  on divergence. **The clean-worktree check means any uncommitted edits to
+  the repo copy must be stashed (or committed) before `--begin` will
+  start** — stash first, run `--begin`, then re-apply the stash and edit.
+  Then run `~/projects/sync-agent-rules.sh --finish` to promote the edit to
+  central, re-stamp, and propagate to all other repos. It prints (does not
+  run) the commit command for the editing repo.
 - **To pull without editing:** run `~/projects/sync-agent-rules.sh` (plain
   sync) or `--check` for drift-only. `--adopt` offers to add the file to
   repos that have agent instructions but no copy yet.
+- **Use `--check` to determine current status before acting.** It reports
+  drift only (no writes), listing repos whose copy differs from central —
+  e.g. `DRIFT: coding-challenges-in-ts` means that repo's copy has
+  un-promoted edits (or is otherwise out of sync). Run it first to decide
+  whether you need `--begin`/`--finish` (promoting an edit) or a plain sync
+  (pulling central out).
 - **Footers are script-managed.** The last line of every copy is a stamp
   (`last-edit=` on central, `synced=` on distributed). Never hand-edit it;
   drift comparison strips it, so stamped copies don't look perpetually
@@ -242,4 +281,4 @@ workflows:
   copy can be done with the VS Code edit tool (it sees the real
   filesystem).
 
-<!-- agent-terminal-rules: synced=2026-08-31T08:56:45Z src=3f9c6658 -->
+<!-- agent-terminal-rules: synced=2026-08-31T01:58:29Z src=3f9c6658 -->
