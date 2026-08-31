@@ -100,6 +100,34 @@ network access), check locations in this order:
   pnpm confirmations) will hang silently. Set `CI=true` or pass the
   non-interactive flag when running package-manager tooling.
 
+## Lint verification and autofix (repo-specific)
+
+This repo's `lint` script is `vp lint . --max-warnings 0
+--report-unused-disable-directives` — note the `.`: it lints the whole
+project, and a trailing path argument is effectively ignored.
+
+- **Per-file lint checks must use `vp lint <file>` (the built-in), never
+  `vpr lint <file>`.** `vpr lint <file>` runs the whole-project script and
+  can report 0 findings while the file still has errors (observed: 39 real
+  `perfectionist/sort-objects` errors in `vite.config.ts` invisible via
+  `vpr lint <file>` but shown by `vp lint <file>` and the Problems panel).
+- **`--fix-suggestions` is not idempotent** — re-sorting one object can
+  expose new violations. Loop until 0, checking with the same command that
+  reports the errors:
+  ```sh
+  until vp lint <file> 2>&1 | grep -q 'error'; do
+    vp lint --fix-suggestions <file> || break
+  done
+  ```
+  Observed: 39 errors needed 2+ passes. Review the diff afterwards —
+  suggestion fixes can move comment-attached lines.
+- `vp lint --fix` applies only safe fixes; `--fix-suggestions` applies
+  suggestion-level fixes (e.g. `perfectionist/sort-objects`), which oxlint
+  documents as "may change program behavior".
+- Known accepted state: ~8 kata test failures and a few hundred Oxlint
+  findings in `src/` are pre-existing; don't chase them when validating
+  unrelated changes (see "About this repo" below).
+
 ## Commits
 
 - Commit messages follow Conventional Commits (`feat:`, `fix:`, `chore:`,
