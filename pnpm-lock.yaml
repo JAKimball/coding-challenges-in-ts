@@ -65,12 +65,12 @@ importers:
       markdownlint-cli2:
         specifier: ^0.23.2
         version: 0.23.2(supports-color@7.2.0)
+      markdownlint-sentences-per-line:
+        specifier: ^0.1.4
+        version: 0.1.4(markdownlint@0.41.1(supports-color@7.2.0))
       node:
         specifier: runtime:24.19.0
         version: runtime:24.19.0
-      sentences-per-line:
-        specifier: ^0.2.2
-        version: 0.2.2
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -2101,9 +2101,14 @@ packages:
     engines: {node: '>=22'}
     hasBin: true
 
-  markdownlint-rule-helpers@0.28.0:
-    resolution: {integrity: sha512-qBOQWESmc/yTNe6nVu3D7AU7pFg2e7T5svbQI+S7rocw4g4xZ3GHerKPl0Rw0cx4fnAViEdzoAcbrxeuXUCEAA==}
-    engines: {node: '>=18'}
+  markdownlint-rule-helpers@0.31.0:
+    resolution: {integrity: sha512-UgVL6v1CB+5ds7W2IBTU6yVDRDH1gSGoWWTRrwZmniU/4AKO8nz0d42gySOIVllfRxzaIMn7Gei4u65y6Rcs2A==}
+    engines: {node: '>=22'}
+
+  markdownlint-sentences-per-line@0.1.4:
+    resolution: {integrity: sha512-iKoT+sVP6rhQXYAoTWZEJSOPC90hYvo5Ksyvvdy4KKQjYRGEi4iMKU+5Mk+asQItLVHDYQ5rkPPNLayY5a7qRg==}
+    peerDependencies:
+      markdownlint: ^0.37.0 || ^0.39.0 || ^0.40.0 || ^0.41.0
 
   markdownlint@0.41.1:
     resolution: {integrity: sha512-qHKeU2E1bdyNAT077go2FVTNXvYcktN5IHtF6XyeD1l0PClxzSp2tUApAV14ORI8DGX4H9bNKZEzelZp4qn8IA==}
@@ -2497,9 +2502,9 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  sentences-per-line@0.2.2:
-    resolution: {integrity: sha512-0Ti6Sz2XQ5GHkzNje3Z+AC/GbaYTMfHxJy7IR9cZCe8EdQuBdSEyuLrgkn7oKiZkf6X/OFsufsraOP3eOZsUSg==}
-    engines: {node: '>=18'}
+  sentences-per-line@0.5.3:
+    resolution: {integrity: sha512-pXuRJ4bKjxEaRVi7ZbwJBF2THPShuLHvWjw9yCtyn5qNqgAfZ/sqPHJu9HS72TffLQwIFX+aSP61HuGGz+7Aww==}
+    engines: {node: '>=22.14.0'}
 
   shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
@@ -4484,7 +4489,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  markdownlint-rule-helpers@0.28.0: {}
+  markdownlint-rule-helpers@0.31.0: {}
+
+  markdownlint-sentences-per-line@0.1.4(markdownlint@0.41.1(supports-color@7.2.0)):
+    dependencies:
+      markdownlint: 0.41.1(supports-color@7.2.0)
+      markdownlint-rule-helpers: 0.31.0
+      sentences-per-line: 0.5.3
 
   markdownlint@0.41.1(supports-color@7.2.0):
     dependencies:
@@ -4887,9 +4898,7 @@ snapshots:
 
   semver@7.8.5: {}
 
-  sentences-per-line@0.2.2:
-    dependencies:
-      markdownlint-rule-helpers: 0.28.0
+  sentences-per-line@0.5.3: {}
 
   shebang-command@2.0.0:
     dependencies:

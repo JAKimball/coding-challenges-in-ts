@@ -52,7 +52,7 @@
     "eslint-plugin-yml": "^1.19.1",
     "knip": "^5.88.1",
     "markdownlint-cli2": "^0.23.2",
-    "sentences-per-line": "^0.2.2",
+    "markdownlint-sentences-per-line": "^0.1.4",
     "typescript": "^5.9.3",
     "vite": "catalog:",
     "vite-plus": "catalog:",
