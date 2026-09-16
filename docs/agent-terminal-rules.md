@@ -307,6 +307,50 @@ access), check locations in this order:
    Windows host side — the server-side pipeline may have failed entirely for
    that session, and the UI-side JSONL is the only complete record.
 
+### 7.1 Escalation audit procedure
+
+When a command's behavior contradicts documented sandbox rules (sudden
+success after failures, results inconsistent with path masking), audit the
+host-side JSONL **before theorizing**. The agent's tool result does not
+reveal which execution mode actually ran; the JSONL does.
+
+Procedure: extract per-command `requestUnsandboxedExecution` values and
+look for **pairs** — the same `commandLine` appearing twice, first
+`requestUnsandboxedExecution=false`, then `=true`. A pair means the harness
+auto-escalated after a user approval prompt, and the result the agent saw
+came from the unsandboxed re-run. A ~25-line Python script suffices:
+
+```python
+import json
+# path = /mnt/c/Users/<user>/AppData/Roaming/Code/User/workspaceStorage/
+#        <ws-hash>/chatSessions/<session-id>.jsonl
+def walk(x):
+    if isinstance(x, dict):
+        if 'commandLine' in x and 'requestUnsandboxedExecution' in x:
+            yield x
+        else:
+            for v in x.values(): yield from walk(v)
+    elif isinstance(x, list):
+        for v in x: yield from walk(v)
+with open(path) as fh:
+    for i, line in enumerate(fh, 1):
+        try: o = json.loads(line)
+        except Exception: continue
+        for c in walk(o):
+            raw = c.get('commandLine', '')
+            if isinstance(raw, dict): raw = raw.get('original', str(raw))
+            cl = str(raw).replace('\n', ' ')[:60]
+            print(f"{i:4} unsb={c.get('requestUnsandboxedExecution')} | {cl}")
+```
+
+Verified 2026-09-15: this procedure explained the retracted "warm-up"
+pattern (§1) — 16 escalation pairs, every "success" traced to one. Caveats:
+the JSONL schema drifts between VS Code builds (`exitCode`/
+`sandboxedExecution` were absent in the current build); the
+`requestUnsandboxedExecution` pairing has remained reliable. The WSL
+username in the path can differ from the login name (`jonat` vs
+`jonathan`).
+
 ## 8. Validation loop
 
 - Run `vp install` after pulling remote changes and before getting started.
