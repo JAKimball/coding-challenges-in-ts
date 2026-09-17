@@ -399,27 +399,48 @@ workflows:
 
 - **To edit the rules:** run
   `~/projects/sync-agent-rules.sh --begin <repo-path>` from the repo you
-  want to edit in. It verifies no lock is held, the worktree is clean, and
-  the repo copy matches central (footer-stripped) — refusing with backups
-  on divergence. **The clean-worktree check means any uncommitted edits to
-  the repo copy must be stashed (or committed) before `--begin` will
-  start** — stash first, run `--begin`, then re-apply the stash and edit.
-  Then run `~/projects/sync-agent-rules.sh --finish` to promote the edit to
-  central, re-stamp, and propagate to all other repos. It prints (does not
-  run) the commit command for the editing repo.
+  want to edit in. It verifies no lock is held, that **the rules file
+  itself** is uncommitted-clean, and that the repo copy matches central
+  (footer-stripped) — refusing with backups on divergence. Other uncommitted
+  work in the repo is allowed: only the rules file must be clean, since
+  `--finish` touches only that file. Then run
+  `~/projects/sync-agent-rules.sh --finish` to promote the edit to central,
+  re-stamp, and propagate to all other repos. It prints (does not run) the
+  commit command for the editing repo.
+- **To promote edits made outside the workflow** (committed directly in a
+  repo without `--begin`/`--finish`, or a repo that missed syncs): run
+  `~/projects/sync-agent-rules.sh --promote <repo-path>`. It requires the
+  rules file to be committed, backs up central before overwriting, and
+  checks the copy's footer history for a sync from central's current
+  content — warning and asking for confirmation when ancestry is uncertain
+  (the copy may silently drop central-only changes). After promotion it
+  syncs the new central out to all other repos.
 - **To pull without editing:** run `~/projects/sync-agent-rules.sh` (plain
   sync) or `--check` for drift-only. `--adopt` offers to add the file to
-  repos that have agent instructions but no copy yet.
+  repos that have agent instructions but no copy yet (stamping a proper
+  `synced=` footer, not cloning central's).
 - **Use `--check` to determine current status before acting.** It reports
-  drift only (no writes), listing repos whose copy differs from central —
-  e.g. `DRIFT: coding-challenges-in-ts` means that repo's copy has
-  un-promoted edits (or is otherwise out of sync). Run it first to decide
-  whether you need `--begin`/`--finish` (promoting an edit) or a plain sync
-  (pulling central out).
-- **Footers are script-managed.** The last line of every copy is a stamp
-  (`last-edit=` on central, `synced=` on distributed). Never hand-edit it;
-  drift comparison strips it, so stamped copies don't look perpetually
-  drifted.
+  drift only (no writes), listing repos whose copy differs from central
+  with the rules file's git state — e.g.
+  `DRIFT: coding-challenges-in-ts  main [modified-uncommitted]` means that
+  repo's copy has un-promoted edits AND uncommitted changes (commit first;
+  `--begin`/`--promote` refuse on uncommitted rules files). It also flags
+  `LOCAL:` lines — up-to-date-but-uncommitted copies whose content matches
+  central but carry uncommitted git state (invisible to drift detection;
+  a plain sync would silently overwrite them). Drifted repos get an
+  interactive viewer: pick a number (or `a` for all) to see the
+  footer-stripped diff of that copy vs central, with meaningful
+  `central`/`<repo>` headers. Run `--check` first to decide whether you
+  need `--begin`/`--finish` (promoting an edit), `--promote` (committed
+  divergent copy), or a plain sync (pulling central out).
+- **Footers are script-managed.** Every copy ends in a footer BLOCK —
+  trailing stamp lines, newest event first, capped at 5:
+  `last-edit=<repo> at=<ts>` on central, `synced=<ts> src=<hash8>` on
+  distributed copies, with previous stamps kept as history beneath. Never
+  hand-edit it; drift comparison strips the whole block, so mixed/old
+  single-line footers never cause false drift, and every write converts
+  them to the block form. The `src=` hashes in the history are how
+  `--promote` detects ancestry.
 - **Locks:** a central directory lock (`~/projects/.agent-terminal-rules.lock`)
   prevents concurrent edits. A stale lock (>24h) can be stolen with
   `--force`. Never delete the lock manually while an edit session is live.
@@ -429,6 +450,7 @@ workflows:
   explicitly with a reason). Editing the repo copy can be done with the
   VS Code edit tool (it sees the real filesystem).
 
+<!-- agent-terminal-rules: synced=2026-09-17T08:20:59Z src=df43015d -->
 <!-- agent-terminal-rules: synced=2026-09-08T07:02:20Z src=7f3d305f -->
 <!-- agent-terminal-rules: synced=2026-09-06T08:11:11Z src=c4a224aa -->
 <!-- agent-terminal-rules: synced=2026-09-03T16:27:44Z src=c4a224aa -->
