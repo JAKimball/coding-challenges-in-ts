@@ -1,11 +1,13 @@
 name: Generate Repository Diagram
 
+# On-demand only (workflow_dispatch): per-push generation produced unsigned
+# bot commits on every push (repo-visualizer commits as its own bot identity
+# and cannot sign), and the README diagram does not need continuous
+# freshness. Run manually from the Actions tab when the codebase structure
+# has changed meaningfully. Rationale: ai-collaboration-guides
+# markdown/decisions/0003-diagram-generation-on-demand.md.
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - 'assets/images/diagram.svg'
+  workflow_dispatch:
 
 jobs:
   build:
