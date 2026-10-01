@@ -4,6 +4,12 @@ export default defineConfig({
   fmt: {
     arrowParens: 'avoid',
     bracketSpacing: true,
+    // Markdown is excluded from oxfmt: oxfmt pads GFM tables to the widest
+    // cell, which conflicts with MD060 "compact" style enforced by
+    // markdownlint (see .markdownlint-cli2.jsonc). markdownlint owns
+    // Markdown formatting via `markdownlint-cli2 --fix` / fixAll-on-save.
+    // Comment-based prettier-ignore directives are NOT reliable protection
+    // — the config exclusion is the only robust guarantee.
     ignorePatterns: ['**/*.md', 'coverage*/**', 'lib/**', 'pnpm-lock.yaml', '.all-contributorsrc'],
     'plugins-comments': {
       removed: ['prettier-plugin-curly'],
