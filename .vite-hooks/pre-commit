@@ -1,1 +1,20 @@
-vp staged --allow-empty
+#!/bin/sh
+# POSIX sh: the vp hook dispatcher (.vite-hooks/_/h) re-executes this script
+# via `/bin/sh -e` regardless of this shebang, so bash-only features (set -o
+# pipefail) are not available. Piping to cat suppresses the vp spinner's
+# high-frequency ANSI redraws (which peg Windows Electron / starve WSL2 vCPU)
+# while preserving milestone logs and diagnostics; `set -e` still catches a
+# failed vp exit because the pipeline's status comes from cat (always 0) —
+# so we explicitly capture and propagate vp's status instead.
+
+# Forward to native Vite+ staged check pipeline.
+# `vp check --fix` (not bare `vp fmt`): oxfmt exits 2 when every matched
+# file is excluded by ignore rules (e.g. markdown-only staged sets with
+# '**/*.md' in fmt.ignorePatterns), which would block markdown-only
+# commits. vp check tolerates an empty fmt target set.
+vp staged | cat
+status=$?
+if [ $status -ne 0 ]; then
+  printf "\x1b[31m💥 Commit blocked: vp staged failed (code %s).\x1b[0m\n" "$status"
+  exit $status
+fi

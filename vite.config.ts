@@ -727,7 +727,11 @@ export default defineConfig({
     },
   },
   staged: {
-    '*': 'vp fmt',
+    // `vp check --fix` (not bare `vp fmt`): oxfmt exits 2 when every matched
+    // file is excluded by ignore rules (e.g. markdown-only staged sets with
+    // '**/*.md' in fmt.ignorePatterns below), which would block
+    // markdown-only commits. vp check tolerates an empty fmt target set.
+    '*': 'vp check --fix',
   },
   test: {
     clearMocks: true,
