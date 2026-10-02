@@ -1,6 +1,6 @@
 # AGENTS.md — Agent Instructions
 
-> **Revision:** 2026-08-31 · See [docs/doc-sync.md](docs/doc-sync.md) for the doc
+> **Revision:** 2026-09-16 · See [docs/doc-sync.md](docs/doc-sync.md) for the doc
 > revision log and conventions for keeping docs in sync with the codebase.
 
 Guidance for AI coding agents (GitHub Copilot, Claude Code, Codex, etc.)
@@ -81,20 +81,16 @@ release. Add a tool name to select part of the graph. For example, run
   - Use `vp <command>` directly for built-in commands (`vp test`, `vp lint`, ...).
 - If `node` doesn't work in a sandboxed terminal, `vp` won't either — they share
   the same runtime. Check `node --version` first before blaming the toolchain.
-- Bare `node`/`pnpm` invocations fail in the sandboxed terminal with
-  "command not found" (exit 127) **even though the binaries exist** — the
-  sandbox gates bare invocations of known runtime/package-manager command
-  names. The same binary executes fine via its absolute path (e.g.
-  `~/.vite-plus/bin/node`) even sandboxed. "Not found" does not mean absent:
-  verify before concluding a tool is missing.
-- PATH exports do **not** reliably take effect across `run_in_terminal`
-  invocations — each call may resolve in a fresh shell, and the sandbox
-  intercepts resolution anyway. Don't burn runs on `export PATH=...` variants:
-  - **`vpr`/`vp`**: on a cold terminal, prefix the warm-up
-    `P="$HOME/.vite-plus/js_runtime/node/24.19.0/bin"; ls "$P/node" >/dev/null && vpr <cmd>`
-    — empirically works; go straight to this, not PATH experiments.
-  - **`pnpm`**: invoke the shim by absolute path (`~/.vite-plus/bin/pnpm`)
-    with `CI=true`; skip PATH manipulation entirely.
+- **Sandboxed invocation (verified 2026-09-15, requires the user-side sandbox
+  settings — see `docs/agent-terminal-rules.md` §1):**
+  - Absolute paths, no prefix: `"$HOME/.vite-plus/bin/vpr" <script>`,
+    `"$HOME/.vite-plus/bin/vp" <cmd>`, `"$HOME/.vite-plus/bin/node"`.
+  - Bare names with one inline PATH prefix:
+    `PATH="$HOME/.vite-plus/bin:$PATH" CI=true vpr <script>`.
+  - There is **no warm-up pattern** — the previously documented `find ...`
+    prefix was an artifact of silent sandbox auto-escalation and has been
+    retracted. If a command "suddenly works", suspect an escalation pair in
+    the session JSONL (rules file §7.1) before crediting any mechanism.
 - Any `pnpm` install/remove (and `git push`) needs network access — set
   `requestAllowNetwork` rather than debugging the resulting fetch failures.
 - Set `CI=true` for all package-manager tooling (`pnpm install/remove/up`) —
@@ -103,11 +99,17 @@ release. Add a tool name to select part of the graph. For example, run
 
 ## Sandbox and environment
 
-- Node, pnpm, and vite-plus live under `$HOME/.vite-plus` and
-  `$HOME/.local/share/pnpm`. Sandboxed terminals may not see these paths; if a
-  command fails with "command not found" or node-resolution errors, request
-  unsandboxed execution (or use the absolute path under `~/.vite-plus/bin/`)
-  rather than improvising PATH workarounds.
+- The terminal sandbox is bubblewrap (`bwrap`) driven by
+  `@vscode/sandbox-runtime`. It sees: the workspace, `$HOME/.vscode-server/`,
+  `$TMPDIR`, and paths listed in `chat.agent.sandbox.fileSystem.linux.allowRead`
+  (user-side settings; literal paths only, resolved post-symlink).
+  Everything else under `$HOME` is masked (ENOENT) — do not conclude files
+  are missing from a sandboxed `ls`.
+- `/tmp` is **read-only** in the sandbox; use a workspace scratch dir
+  (e.g. `.vscode-scratch/`) for temp files.
+- Auto-escalation to unsandboxed execution is invisible to the agent —
+  request unsandboxed explicitly (with a reason) when a command genuinely
+  needs it, so the mode is deterministic. See rules file §2.
 - The GitHub CLI (`gh`) is **not authenticated** in agent terminals. If a `gh`
   command fails with an auth prompt or "To get started with GitHub CLI" error,
   do not retry or work around it — ask the user to run the command or paste the
@@ -169,6 +171,15 @@ project, and a trailing path argument is effectively ignored.
 - Known accepted state: ~8 kata test failures and a few hundred Oxlint
   findings in `src/` are pre-existing; don't chase them when validating
   unrelated changes (see "About this repo" below).
+
+## Markdown tables (MD060)
+
+- This repo enforces **compact tables** repo-wide
+  (`MD060: { style: "compact" }` in `.markdownlint-cli2.jsonc`).
+- **Never re-pad or align tables** — markdownlint owns Markdown
+  formatting; oxfmt is excluded from `**/*.md` in `vite.config.ts`
+  (Decision 0006 in ai-collaboration-guides). Do not add
+  `prettier-ignore` as protection — it is unreliable against oxfmt.
 
 ## Commits
 
