@@ -34,9 +34,7 @@
     // (201 findings across TOOLS_OVERVIEW.md and ad-hoc docs on 2026-08-31).
     "markdownlint-sentences-per-line": false,
   },
-  "customRules": [
-    "markdownlint-sentences-per-line"
-  ],
+  "customRules": ["markdownlint-sentences-per-line"],
   "ignores": [
     ".github/CODE_OF_CONDUCT.md",
     "CHANGELOG.md",
@@ -45,5 +43,7 @@
     "src/aoc/**/README.md",
     "src/aoc/ad-hoc/archive/**",
     "src/text/sample.md",
+    // Scratch dirs are never lint targets (agent working files, not docs).
+    "**/.vscode-scratch/**",
   ],
 }
