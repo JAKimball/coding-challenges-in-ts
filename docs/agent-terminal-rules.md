@@ -134,6 +134,14 @@
   network failure looks like a generic fetch error — don't debug it, re-run
   with the flag.
 
+- **Sandboxed writes outside the workspace land in ephemeral storage and
+  silently vanish (verified 2026-10-05).** A hook installer writing to
+  `~/.copilot/hooks/` reported success, but the files were gone on the
+  next unsandboxed read. Any script that deploys to `$HOME` (hook
+  installers, config updates, dotfile edits) must run unsandboxed —
+  request it with a reason BEFORE running, not after a silent loss.
+  Verify deployments with an unsandboxed read.
+
 - **Auto-escalation is invisible to the agent — never build on it.** When a
   sandboxed command's output looks sandbox-blocked, the harness may re-run
   it unsandboxed after a user approval prompt. The agent receives only the
@@ -183,6 +191,22 @@
   (request unsandboxed) rather than re-running the same command. The user's
   terminal and the sandbox can see different filesystems.
 
+- **Heredoc `!` escaping trap (verified 2026-10-05).** The harness
+  escapes `!` as `\!` (bash history-expansion protection) when
+  transmitting commands; inside a quoted heredoc (`<< 'EOF'`) the
+  backslash arrives literally → Python
+  `SyntaxError: unexpected character after line continuation character`.
+  Deterministic — no retry variant fixes it. Fixes: write the script
+  with the file-creation tool (never heredoc), avoid `!` in the code
+  (`if not (x == y): continue`), or bake
+  `sed -i 's/\\!/!/'` into the same command.
+
+- **Near-identical retries are themselves a loop.** Re-issuing a failing
+  heredoc under new filenames (`script12.py` → `script13.py`) ~10 times
+  is the same failure with cosmetic variation — and it evades
+  exact-match loop detection. When the only change between retries is a
+  filename, counter, or counter-bearing token, stop and diagnose.
+
 - **Do not write scripts against directory layouts you cannot see.** Get a
   real listing first (unsandboxed run, or pasted from the user) — a guessed
   glob produced a broken sync script that the user had to fix.
@@ -215,6 +239,13 @@
 
   (`>/dev/null` is equally fast but loses all progress output — `| cat`
   preserves the milestone lines users want to see.)
+
+- **Hook authors: the same throttle applies to hook output.** A hook that
+  emits progress/spinner output streams into the same chat-panel display
+  path on every tool call. Keep hook stdout to a single JSON line (or
+  nothing); never emit animated progress from a hook. vp-based commands
+  inside hook scripts must be piped to `cat` with the pipeline status
+  captured explicitly (see §6 for the POSIX-sh form).
 
 ## 5. GitHub CLI
 
@@ -278,6 +309,18 @@
   repo's build + typecheck; (4) close/reload editor tabs in stale
   sessions so they re-read the current file.
 
+- **Format-on-save can modify files mid-session (verified 2026-10-05).**
+  An editor format-on-save (e.g. the shfmt-based shell formatter) can
+  rewrite a file on disk while an agent session holds it — the agent's
+  next edit lands on changed content and the buffer shows a mysterious
+  "unsaved" flag the agent did not cause. Rules: (1) commit formatting
+  drift promptly so buffer/disk/HEAD stay in sync; (2) when a file
+  unexpectedly shows as modified, check whether a formatter touched it
+  (`git diff` for pure reformatting) before assuming data loss; (3) know
+  which formatter owns each file type (verify by scanning extension
+  package.json `documentFormattingProvider` capabilities — for shell
+  scripts it is the shfmt wrapper; oxfmt/vp check does not cover .sh).
+
 ## 7. Forensics — where session/execution data actually lives
 
 When asked to audit what an agent did (exit codes, sandbox mode, network
@@ -306,6 +349,21 @@ access), check locations in this order:
    If the server-side debug log is empty for a session, skip directly to the
    Windows host side — the server-side pipeline may have failed entirely for
    that session, and the UI-side JSONL is the only complete record.
+   Exception (verified 2026-10-05): hook-execution spans (`"type":"hook"`
+   with `attrs.command/input/output/resultKind`) and `llm_request` events
+   (actual model payloads) DO appear in the server-side debug log — use
+   them to verify whether a hook fired and whether its deny/warning text
+   reached the model. Caveat: naive text-matching of the log gives false
+   positives — the agent's own script source echoed in earlier tool
+   results contains the same strings (distinguish by `%s` placeholder
+   presence).
+4. **VS Code user settings live Windows-side in WSL setups (verified
+   2026-10-05).**
+   `/mnt/c/Users/<user>/AppData/Roaming/Code/User/settings.json` — NOT
+   `~/.vscode-server/data/User/settings.json`. The file is JSONC: strip
+   comments string-aware (not plain `json.load`) and expect pre-existing
+   trailing commas (VS Code tolerates them). `/mnt/c` access may need
+   unsandboxed execution per the user's denyRead settings.
 
 ### 7.1 Escalation audit procedure
 
@@ -450,6 +508,7 @@ workflows:
   explicitly with a reason). Editing the repo copy can be done with the
   VS Code edit tool (it sees the real filesystem).
 
+<!-- agent-terminal-rules: synced=2026-10-06T04:30:24Z src=c299d7b0 -->
 <!-- agent-terminal-rules: synced=2026-09-17T08:20:59Z src=df43015d -->
 <!-- agent-terminal-rules: synced=2026-09-08T07:02:20Z src=7f3d305f -->
 <!-- agent-terminal-rules: synced=2026-09-06T08:11:11Z src=c4a224aa -->
