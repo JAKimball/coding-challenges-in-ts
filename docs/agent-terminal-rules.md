@@ -8,7 +8,7 @@
 > ~/projects/sync-agent-rules.sh
 > ```
 >
-> If you are editing _this_ copy, copy your changes back to the central file
+> If you are editing *this* copy, copy your changes back to the central file
 > first, then sync — otherwise the next sync will silently overwrite them.
 > (Note: agents in sandboxed terminals cannot see or write the central file
 > at `~/projects/` — hand the edit to the user, or apply it in the repo copy
@@ -49,7 +49,7 @@
 > alone fails — every shim there is a symlink into `current/` → `0.3.1/`,
 > and the whole `~/.vite-plus/` entry is the minimal correct scope;
 > (c) `github.copilot.chat.additionalReadAccessPaths` grants read access to
-> the _agent tools_ (read_file/grep) only — it does NOT affect the terminal
+> the *agent tools* (read_file/grep) only — it does NOT affect the terminal
 > sandbox. (d) **Individual files are valid allowRead entries (verified
 > 2026-10-01):** `~/.gitconfig` and `~/.gitconfig.common` were added and
 > the git include chain resolves sandboxed — see §6 for the identity and
@@ -152,7 +152,7 @@
   sandboxed command's output looks sandbox-blocked, the harness may re-run
   it unsandboxed after a user approval prompt. The agent receives only the
   final result with no indication the mode changed. Session-forensics
-  signature of an escalation: the host-side JSONL (§7) contains a _pair_ of
+  signature of an escalation: the host-side JSONL (§7) contains a *pair* of
   records for the same `commandLine` — first
   `requestUnsandboxedExecution=false`, then `=true`. 16 such pairs were
   found in one session (2026-09-15) and every "warm-up success" traced to
@@ -406,7 +406,7 @@ access), check locations in this order:
 1. **Windows host UI side** (authoritative, complete):
    `/mnt/c/Users/<user>/AppData/Roaming/Code/User/workspaceStorage/<ws-hash>/chatSessions/<session-id>.jsonl`
    — per-command `requestUnsandboxedExecution`, `requestAllowNetwork`,
-   `commandLine`, timestamps. **Escalation signature:** a _pair_ of records
+   `commandLine`, timestamps. **Escalation signature:** a *pair* of records
    with the same `commandLine` — first `requestUnsandboxedExecution=false`,
    then `=true` (see §2). Note (2026-09-15): in the current VS Code build
    the `exitCode`/`sandboxedExecution` fields were not found at their
@@ -598,8 +598,8 @@ workflows:
   explicitly with a reason). Editing the repo copy can be done with the
   VS Code edit tool (it sees the real filesystem).
 
+<!-- agent-terminal-rules: synced=2026-10-07T11:16:17Z src=a44b5d08 -->
 <!-- agent-terminal-rules: synced=2026-10-07T09:38:07Z src=2dafcfeb -->
 <!-- agent-terminal-rules: synced=2026-10-06T04:30:24Z src=c299d7b0 -->
 <!-- agent-terminal-rules: synced=2026-09-17T08:20:59Z src=df43015d -->
 <!-- agent-terminal-rules: synced=2026-09-08T07:02:20Z src=7f3d305f -->
-<!-- agent-terminal-rules: synced=2026-09-06T08:11:11Z src=c4a224aa -->
