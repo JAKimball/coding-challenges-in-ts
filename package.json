@@ -40,7 +40,7 @@
     "uuid": "^14.0.2"
   },
   "devDependencies": {
-    "@types/node": "^24.13.3",
+    "@types/node": "^24.19.1",
     "@vitest/coverage-istanbul": "catalog:",
     "@vitest/ui": "catalog:",
     "console-fail-test": "^0.4.4",
@@ -51,8 +51,8 @@
     "eslint-plugin-regexp": "^2.10.0",
     "eslint-plugin-yml": "^1.19.1",
     "knip": "^5.88.1",
-    "markdownlint-cli2": "^0.23.2",
-    "markdownlint-sentences-per-line": "^0.1.4",
+    "markdownlint-cli2": "^0.23.3",
+    "markdownlint-sentences-per-line": "^0.1.7",
     "typescript": "^5.9.3",
     "vite": "catalog:",
     "vite-plus": "catalog:",
@@ -61,9 +61,9 @@
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "24.19.0",
+      "version": "24.21.0",
       "onFail": "download"
     }
   },
-  "packageManager": "pnpm@11.24.0+sha512.bd27e345e976dcb0be0b7a1228217b049a817e21b1f355c90dbe7dc46671895a8bc1e6d06c24554505ea93ea0b45f489a27ec1bfbc8de6a9659fca0f16fa0000"
+  "packageManager": "pnpm@12.10.1"
 }
