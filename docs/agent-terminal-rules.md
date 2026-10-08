@@ -53,7 +53,11 @@
 > sandbox. (d) **Individual files are valid allowRead entries (verified
 > 2026-10-01):** `~/.gitconfig` and `~/.gitconfig.common` were added and
 > the git include chain resolves sandboxed — see §6 for the identity and
-> signing consequences.
+> signing consequences. (e) **Windows-side paths under `/mnt/c` are valid
+> allowRead entries (verified 2026-10-07):**
+> `/mnt/c/Users/<user>/AppData/Roaming/Code/User/` was added and sandboxed
+> `ls`/`grep` against the Windows-side settings and chatSessions JSONL now
+> succeed without escalation — see §2 for the verification caveat.
 
 - **Vite+ wraps the package manager, never the reverse.** Run project scripts
   with `vpr <script>` (e.g. `vpr test`, `vpr lint:knip`). Never `pnpm run` or
@@ -126,7 +130,14 @@
   ENOENT. Do not conclude files are missing from a sandboxed `ls`.
   `/mnt/c` is denyRead/denyWrite by user settings since 2026-10-01;
   per-session approval is the user's preference (Windows-side access via
-  `c:` URI schemes may bypass the linux-sandbox setting).
+  `c:` URI schemes may bypass the linux-sandbox setting). Exception
+  (verified 2026-10-07): `/mnt/c/Users/<user>/AppData/Roaming/Code/User/`
+  is in allowRead — sandboxed reads of Windows-side settings and the
+  host-side chatSessions JSONL (§7.1) work without escalation. **Caveat:
+  an allowRead change takes effect mid-session without reload, but early
+  post-change "successes" may still be escalation pairs from before the
+  setting landed — audit the JSONL (§7.1) and credit the setting only on
+  a single `=false` record with no `=true` twin.**
 
 - **`/tmp` is READ-ONLY in the sandbox (corrected 2026-09-15).** Earlier
   revisions called `/tmp` the safe scratch space — that observation was
@@ -598,8 +609,8 @@ workflows:
   explicitly with a reason). Editing the repo copy can be done with the
   VS Code edit tool (it sees the real filesystem).
 
+<!-- agent-terminal-rules: synced=2026-10-07T23:18:54Z src=f5b21c75 -->
 <!-- agent-terminal-rules: synced=2026-10-07T11:16:17Z src=a44b5d08 -->
 <!-- agent-terminal-rules: synced=2026-10-07T09:38:07Z src=2dafcfeb -->
 <!-- agent-terminal-rules: synced=2026-10-06T04:30:24Z src=c299d7b0 -->
 <!-- agent-terminal-rules: synced=2026-09-17T08:20:59Z src=df43015d -->
-<!-- agent-terminal-rules: synced=2026-09-08T07:02:20Z src=7f3d305f -->
