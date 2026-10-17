@@ -1,4 +1,10 @@
 {
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#204881",
+    "titleBar.activeForeground": "#d4d4d4",
+    "titleBar.inactiveBackground": "#16325A",
+    "titleBar.inactiveForeground": "#d4d4d4"
+  },
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "[typescript]": {
     "editor.defaultFormatter": "oxc.oxc-vscode",
