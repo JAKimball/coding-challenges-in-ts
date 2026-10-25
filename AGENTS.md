@@ -23,7 +23,8 @@ The rules most often violated under pressure, restated here for emphasis:
 1. **"command not found" does not mean absent.** The sandbox gates bare
    invocations of known runtime/package-manager names (exit 127 even though
    the binary exists). Verify with `ls`, then use the absolute path
-   (`~/.vite-plus/bin/...`). Never conclude a tool is missing from a 127.
+   (`~/.local/share/vite-plus/bin/...`). Never conclude a tool is missing
+   from a 127.
 2. **PATH exports are a dead end.** `export PATH=...`, `env -i PATH=...`, and
    inline `PATH=... cmd` prefixes do not reliably work in sandboxed terminals.
    After ONE failed PATH attempt, switch to absolute paths or the documented
@@ -81,12 +82,15 @@ release. Add a tool name to select part of the graph. For example, run
   - Use `vp <command>` directly for built-in commands (`vp test`, `vp lint`, ...).
 - If `node` doesn't work in a sandboxed terminal, `vp` won't either — they share
   the same runtime. Check `node --version` first before blaming the toolchain.
-- **Sandboxed invocation (verified 2026-09-15, requires the user-side sandbox
-  settings — see `docs/agent-terminal-rules.md` §1):**
-  - Absolute paths, no prefix: `"$HOME/.vite-plus/bin/vpr" <script>`,
-    `"$HOME/.vite-plus/bin/vp" <cmd>`, `"$HOME/.vite-plus/bin/node"`.
+- **Sandboxed invocation (verified 2026-09-15; re-verified 2026-10-25 under
+  the Vite+ v1.4.0 split layout; requires the user-side sandbox settings —
+  see `docs/agent-terminal-rules.md` §1):**
+  - Absolute paths, no prefix:
+    `"$HOME/.local/share/vite-plus/bin/vpr" <script>`,
+    `"$HOME/.local/share/vite-plus/bin/vp" <cmd>`,
+    `"$HOME/.local/share/vite-plus/bin/node"`.
   - Bare names with one inline PATH prefix:
-    `PATH="$HOME/.vite-plus/bin:$PATH" CI=true vpr <script>`.
+    `PATH="$HOME/.local/share/vite-plus/bin:$PATH" CI=true vpr <script>`.
   - There is **no warm-up pattern** — the previously documented `find ...`
     prefix was an artifact of silent sandbox auto-escalation and has been
     retracted. If a command "suddenly works", suspect an escalation pair in

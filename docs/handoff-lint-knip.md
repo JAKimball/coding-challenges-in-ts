@@ -114,10 +114,12 @@ with a comment instead).
 ## Gotchas
 
 - Run knip via `vpr lint:knip` (or `pnpm lint:knip`) from repo root.
-- The sandboxed agent terminal has flaky access to `~/.vite-plus` binaries;
+- The sandboxed agent terminal has flaky access to the vite-plus binaries
+  (under `~/.local/share/vite-plus/` since the v1.4.0 split layout;
+  `~/.vite-plus/` before 2026-10-25);
   warm up with `ls "$P/node" >/dev/null` where
-  `P=/home/jonathan/.vite-plus/js_runtime/node/24.19.0/bin` before running
-  node-based tools, or just use your own terminal.
+  `P=/home/jonathan/.local/share/vite-plus/js_runtime/node/24.19.0/bin`
+  before running node-based tools, or just use your own terminal.
 - Husky pre-commit may fail in sandbox (`pnpm not found`); use
   `--no-verify` and note it in the commit if so.
 - Don't touch unfinished katas while cleaning (8 known test failures are

@@ -88,7 +88,9 @@ built-in commands like `vp --version`. Possible mechanisms:
 2. Compare with `strace` on `timeout 5 node markdownlint-cli2-bin.mjs ...`
    (known-good) to spot the divergence.
 3. Check vp release notes / source for signal handling in the task runner
-   (`vp run` path). The binary is at `~/.vite-plus/current/bin/vp`.
+   (`vp run` path). The binary is at
+   `~/.local/share/vite-plus/current/bin/vp` (`~/.vite-plus/current/bin/vp`
+   before the v1.4.0 split layout).
 4. Test `timeout --preserve-status 5 vpr lint:md` and
    `timeout -s KILL 5 vpr lint:md` (SIGKILL can't be trapped — if KILL makes
    it exit at 5s, that confirms signal swallowing).
