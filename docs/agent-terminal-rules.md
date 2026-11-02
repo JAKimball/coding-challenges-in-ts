@@ -16,28 +16,30 @@
 
 <!-- -->
 
-> Portable rules for AI coding agents working in this environment. Copy into a
-> project's `AGENTS.md` or `.github/copilot-instructions.md`. Every rule below
-> is empirically verified — most were learned by burning tool calls on the
-> failure first. Sources: repo memory (`agent-terminal-node-pnpm-vpr.md`,
-> `vscode-env-notes.md`, `copilot-chat-storage-locations.md`) and session
-> forensics from the coding-challenges-in-ts repo (2026-08 → 2026-09-15).
->
-> **2026-09-15 major revision.** The previously documented "warm-up" pattern
-> was **retracted** — see §1. It was an artifact of silent sandbox
-> auto-escalation, not a real mechanism. The sandbox model below is verified
-> against the harness source (`@vscode/sandbox-runtime`) and the host-side
-> session JSONL.
->
-> **2026-10-25 revision — Vite+ v1.4.0 split layout.** The single
-> `~/.vite-plus/` tree is gone; the toolchain moved to
-> `~/.local/share/vite-plus/` (config: `~/.config/vite-plus/`; cache:
-> `~/.cache/vite-plus/`; state: `~/.local/state/vite-plus/`). All
-> invocation forms and the allowRead entry below were updated and
-> re-verified sandboxed. The `env` file no longer exports `VP_HOME` —
-> guard on PATH instead.
+> Facts-only edition (2026-11-02, decision 0009). Portable facts for AI
+> coding agents working in this environment (Vite+ / pnpm / WSL / VS Code
+> agent harness). This file keeps the environment model,
+> enforcement-layer facts, and canonical cross-cutting guardrails.
+> **Procedures and task-scoped rules live in the agent skills; the why
+> (evidence, measurements, incident history) lives in
+> `docs/agent-terminal-rationale.md`.** Every fact is empirically
+> verified.
 
-## 1. Command invocation — get it right the first time
+## Where things moved (2026-11-02 split)
+
+- §1 invocation forms + pnpm/workspace procedures → `pnpm-vite` skill
+  (§1–§2)
+- §4 long-running/interactive commands → `pnpm-vite` skill (§3)
+- §8 validation loop, §9 lint verification → `pnpm-vite` skill (§4–§5)
+- §6 commit procedure + task rules → `git-commit` skill
+- §7/§7.1 forensics locations + audit procedure → `session-forensics`
+  skill
+- Revision history, evidence, measurements, incident lore →
+  `docs/agent-terminal-rationale.md`
+
+Retained section numbers are stable — gaps are where sections moved out.
+
+## 1. Command invocation — facts
 
 > **Prerequisite (user-side, one-time per machine):** the terminal sandbox
 > must be allowed to read the toolchain. In VS Code settings:
@@ -57,79 +59,35 @@
 > **real paths post-symlink**, so scoping to `~/.local/share/vite-plus/bin/`
 > alone fails — every shim there is a symlink into `current/` → `1.4.0/`,
 > and the whole `~/.local/share/vite-plus/` entry is the minimal correct
-> scope; (c) `github.copilot.chat.additionalReadAccessPaths` grants read access to
-> the *agent tools* (read_file/grep) only — it does NOT affect the terminal
-> sandbox. (d) **Individual files are valid allowRead entries (verified
-> 2026-10-01):** `~/.gitconfig` and `~/.gitconfig.common` were added and
-> the git include chain resolves sandboxed — see §6 for the identity and
-> signing consequences. (e) **Windows-side paths under `/mnt/c` are valid
-> allowRead entries (verified 2026-10-07):**
-> `/mnt/c/Users/<user>/AppData/Roaming/Code/User/` was added and sandboxed
-> `ls`/`grep` against the Windows-side settings and chatSessions JSONL now
-> succeed without escalation — see §2 for the verification caveat.
+> scope; (c) `github.copilot.chat.additionalReadAccessPaths` grants read
+> access to the *agent tools* (read_file/grep) only — it does NOT affect
+> the terminal sandbox. (d) **Individual files are valid allowRead entries
+> (verified 2026-10-01):** `~/.gitconfig` and `~/.gitconfig.common` were
+> added and the git include chain resolves sandboxed — see §6. (e)
+> **Windows-side paths under `/mnt/c` are valid allowRead entries (verified
+> 2026-10-07):** `/mnt/c/Users/<user>/AppData/Roaming/Code/User/` was added
+> and sandboxed `ls`/`grep` against the Windows-side settings and
+> chatSessions JSONL succeed without escalation — see §2 for the
+> verification caveat.
 
-- **Vite+ wraps the package manager, never the reverse.** Run project scripts
-  with `vpr <script>` (e.g. `vpr test`, `vpr lint:knip`). Never `pnpm run` or
-  `pnpm exec vp` — pnpm's script environment prepends `node_modules/.bin` to
-  PATH, which breaks vp's node resolution
-  (`error: Cannot find binary path for command 'node'`).
-
-- **Canonical invocation forms (verified fully sandboxed 2026-09-15;
-  re-verified 2026-10-25 under the v1.4.0 split layout, zero escalations):**
-
-  ```sh
-  # absolute paths — no prefix needed:
-  "$HOME/.local/share/vite-plus/bin/vpr" <script>
-  "$HOME/.local/share/vite-plus/bin/vp" <cmd>
-  "$HOME/.local/share/vite-plus/bin/node" --version  # vp-managed node
-
-  # bare names — one inline PATH prefix:
-  PATH="$HOME/.local/share/vite-plus/bin:$PATH" CI=true vpr <script>
-  PATH="$HOME/.local/share/vite-plus/bin:$PATH" CI=true pnpm <cmd>
-  ```
-
-  Bare names without the prefix fail with exit 127 (not on the sandbox
-  PATH). `CI=true` prevents silent hangs on interactive prompts.
-
-- **⚠ RETRACTED: the "warm-up" pattern (2026-09-10 → 2026-09-15).** Earlier
-  revisions of this file documented a `find ... -name vp` prefix that
-  "unblocked" vp execution. Session forensics (host-side JSONL, §7) proved
-  every such "success" was the harness **auto-escalating to unsandboxed
-  execution** after a user approval prompt — the agent never saw the
-  difference. There is no warm-up mechanism; the failures were genuine
-  sandbox path-masking, and the fix is the settings change above, not a
-  command prefix. Lesson recorded in §2: verify which mode actually ran
-  before building a theory on "it works now".
-
-- **`pnpm` build-script approvals are declared, not interactive (2026-09-03).**
-  `pnpm approve-builds` is interactive and hangs in agent terminals.
-  Declare the build in `pnpm-workspace.yaml` instead:
-  `allowBuilds: { <dep>: true }`, then re-run `pnpm install`. Also:
-  `CI=true pnpm install` fails with `ERR_PNPM_IGNORED_BUILDS` once any
-  dep declares a build script that isn't in `allowBuilds` — the fix is
-  the yaml edit, never the interactive prompt. **Workspace globs live in
-  `pnpm-workspace.yaml` too: pnpm ignores the npm `workspaces` field of
-  root package.json once that file exists** — missing `packages:` there
-  silently unlinks all packages (`pnpm -r list` shows only the root;
-  `--filter` matches nothing). Check `pnpm -r list` after any
-  workspace-file edit.
-
+- **Invocation forms** (canonical `vpr`/`vp`/bare-name/PATH-prefix
+  forms, `CI=true` discipline) → `pnpm-vite` skill §1. Facts: Vite+
+  wraps the package manager, never the reverse (`pnpm run` / `pnpm exec
+  vp` breaks vp's node resolution); bare names without the PATH prefix
+  fail with exit 127.
 - **"command not found" does not mean absent.** The sandbox PATH simply
-  doesn't include `~/.local/share/vite-plus/bin`. Use the canonical forms
-  above before concluding a tool is missing.
-
-- **Node resolution through the vp shim (verified 2026-10-30).**
-  `~/.local/share/vite-plus/bin/node` is a symlink to `current/bin/vp` —
-  the shim resolves the runtime from the nearest `devEngines` pin
-  (`onFail: download` auto-installs it into `js_runtime/node/`), and
-  falls back to the **current LTS** when nothing pins a version (the
-  shim's `index_cache.json` tracks which release is LTS). Consequences:
-  (a) a new LTS rolls out silently on first invocation in unpinned
-  directories (observed: v26.13.0 "Lithium" auto-downloaded on
-  2026-10-30); (b) over **non-interactive ssh** the shim dir is not on
-  PATH (`.bashrc` is not sourced) — use `bash -ic '<cmd>'` on the remote
-  or an absolute path; (c) "node: command not found" over ssh usually
-  means (b), not a missing runtime.
+  doesn't include `~/.local/share/vite-plus/bin` — use the skill's
+  canonical forms before concluding a tool is missing.
+- **Node runtime resolution** (vp shim resolves the runtime from the
+  nearest `devEngines` pin, falls back to current LTS; over
+  non-interactive ssh the shim dir is not on PATH) → `pnpm-vite` skill
+  §1.
+- **The "warm-up" pattern was RETRACTED (2026-09-15).** There is no
+  warm-up mechanism — the old `find ... -name vp` "fix" was an artifact
+  of silent sandbox auto-escalation. Evidence:
+  `docs/agent-terminal-rationale.md`.
+- **pnpm build approvals are declared, not interactive; workspace globs
+  live in `pnpm-workspace.yaml` too** → `pnpm-vite` skill §2.
 
 - **Never put raw control characters in tool-call payloads (learned
   2026-10-30 — HARD RULE).** A raw Ctrl-C (U+0003) is illegal in XML and
@@ -208,10 +166,12 @@
   `c:` URI schemes may bypass the linux-sandbox setting). Exception
   (verified 2026-10-07): `/mnt/c/Users/<user>/AppData/Roaming/Code/User/`
   is in allowRead — sandboxed reads of Windows-side settings and the
-  host-side chatSessions JSONL (§7.1) work without escalation. **Caveat:
+  host-side chatSessions JSONL (`session-forensics` skill) work without
+  escalation. **Caveat:
   an allowRead change takes effect mid-session without reload, but early
   post-change "successes" may still be escalation pairs from before the
-  setting landed — audit the JSONL (§7.1) and credit the setting only on
+  setting landed — audit the JSONL (`session-forensics` skill) and credit
+  the setting only on
   a single `=false` record with no `=true` twin.**
 
 - **`/tmp` is READ-ONLY in the sandbox (corrected 2026-09-15).** Earlier
@@ -240,7 +200,8 @@
   sandboxed command's output looks sandbox-blocked, the harness may re-run
   it unsandboxed after a user approval prompt. The agent receives only the
   final result with no indication the mode changed. Session-forensics
-  signature of an escalation: the host-side JSONL (§7) contains a *pair* of
+  signature of an escalation: the host-side JSONL (`session-forensics`
+  skill) contains a *pair* of
   records for the same `commandLine` — first
   `requestUnsandboxedExecution=false`, then `=true`. 16 such pairs were
   found in one session (2026-09-15) and every "warm-up success" traced to
@@ -274,6 +235,19 @@
   layer has no output heuristic. Prefer
   `git -C <path>` over cross-folder `cd` chains (weak evidence, see
   §3).
+
+- **Repo-location fact (where things are NOT).** The workspace folder
+  is not the only repo: dev repos live under `~/projects/` (WSL home,
+  sandbox-masked from other workspaces) and some under
+  `/mnt/c/Users/jonat/projects/` (Windows side). Cross-repo reads need
+  unsandboxed execution or a second workspace root.
+
+- **Harness output compression (EXPERIMENTAL — re-verify before relying
+  on it).** Long command output (e.g. `git diff`) can be truncated with
+  an "unchanged context lines omitted" marker; redirect output to a
+  workspace scratch file and read the file instead. Open questions:
+  which tools compress, the size threshold, whether omitted content is
+  recoverable, and interaction with diff-review workflows.
 
 ## 3. Retry discipline — never burn runs on a deterministic failure
 
@@ -321,9 +295,11 @@
 
 - **Near-identical retries are themselves a loop.** Re-issuing a failing
   heredoc under new filenames (`script12.py` → `script13.py`) ~10 times
-  is the same failure with cosmetic variation — and it evades
-  exact-match loop detection. When the only change between retries is a
-  filename, counter, or counter-bearing token, stop and diagnose.
+  is the same failure with cosmetic variation. The loop-guard hook
+  normalizes digit-bearing tokens in its signature (same-loop-new-
+  filename is caught: warn → deny → circuit breaker) — but the rule
+  stands: when the only change between retries is a filename, counter,
+  or counter-bearing token, stop and diagnose.
 
 - **Do not write scripts against directory layouts you cannot see.** Get a
   real listing first (unsandboxed run, or pasted from the user) — a guessed
@@ -348,7 +324,7 @@
   masquerades as new information. Root cause: a model that doesn't fully
   understand sandbox behavior assumes non-determinism where results are
   deterministic — the wrong model directly manufactures retries and
-  loops. Audit the JSONL (§7.1); never retry-loop.
+  loops. Audit the JSONL (`session-forensics` skill); never retry-loop.
 
 - **Subagent retry-loop hazard (verified 2026-10-01).** A subagent given
   a non-matching glob re-issued the identical failing search 43+ times
@@ -357,49 +333,11 @@
   before delegating, scope globs per workspace folder correctly, or
   survey in the main session where course correction is possible.
 
-## 4. Long-running and interactive commands
+## 4. Long-running and interactive commands — moved
 
-- **Watch-mode scripts (`vpr devtest`) and dev servers must run as background
-  tasks**, never as blocking terminal commands. Blocking on them hangs the
-  terminal and invites retry loops.
-
-- **Set `CI=true` (or the non-interactive flag) for all package-manager
-  tooling.** Commands that may trigger interactive prompts (Corepack version
-  downloads, pnpm confirmations) hang silently.
-
-- **Pipe vp progress commands to `cat` in agent terminals (verified
-  2026-09-07, chat-hub).** `vp staged` / `vp check` render an animated
-  spinner of high-frequency ANSI cursor rewrites. In the agent harness that
-  stream is captured by the VS Code Remote extension host, serialized to
-  the chat panel's live tool display, and repainted by the Windows Electron
-  process — which pegs the Windows host CPU and throttles Hyper-V vCPU
-  allocation to the WSL2 VM. Measured on one machine: `vp staged` takes
-  35–60s with the spinner, **10–14s with `| cat`** (same milestone output,
-  no animation). `CI=true` and `TERM=dumb` do NOT suppress it (spinner still
-  renders); only breaking the TTY does. Rule:
-
-  ```sh
-  "$HOME/.local/share/vite-plus/bin/vp" staged | cat
-  "$HOME/.local/share/vite-plus/bin/vp" check | cat
-  ```
-
-  (`>/dev/null` is equally fast but loses all progress output — `| cat`
-  preserves the milestone lines users want to see.)
-
-- **`vp fmt` as a staged pre-commit command is a foot-gun (verified
-  2026-10-01).** oxfmt exits 2 when every matched file is excluded by
-  ignore rules (markdown-only staged sets with `'**/*.md'` in
-  `fmt.ignorePatterns`) — blocking markdown-only commits. `vp check
-  --fix` tolerates the empty fmt target set and also picks up
-  lint/typecheck on staged files. **Staged config should use `vp check
-  --fix`, not `vp fmt`.**
-
-- **Hook authors: the same throttle applies to hook output.** A hook that
-  emits progress/spinner output streams into the same chat-panel display
-  path on every tool call. Keep hook stdout to a single JSON line (or
-  nothing); never emit animated progress from a hook. vp-based commands
-  inside hook scripts must be piped to `cat` with the pipeline status
-  captured explicitly (see §6 for the POSIX-sh form).
+→ `pnpm-vite` skill §3: background-task discipline, `CI=true`, the
+spinner/`| cat` throttle (with measurements), the `vp fmt` foot-gun
+(use `vp check --fix` for staged config), and hook-output rules.
 
 ## 5. GitHub CLI
 
@@ -407,27 +345,20 @@
   with an auth prompt or "To get started with GitHub CLI" error, do not retry
   or work around it — ask the user to run the command or paste the output.
 
-## 6. Commits
+## 6. Commits — identity and signing facts
 
-- **Commit messages follow Conventional Commits** (`feat:`, `fix:`,
-  `chore:`, `docs:`, ...). Draft commit messages when asked, but do not
-  commit unless the user explicitly asks for it.
+Procedure and task rules live in the `git-commit` skill (commit only
+when the user explicitly asks; unsandboxed commit; `-m` flags; one
+commit per call; GPG prompt handling; verification steps; hook
+authoring).
 
-- **Signed commits: the GPG passphrase must come from the user (first
-  commit only).** gpg-agent caches it afterward — subsequent commits in
-  the session go through without prompting. If the first commit fails
-  with an identity/passphrase error, hand the commit to the user rather
-  than retrying.
-
-- **Identity resolution works sandboxed (updated 2026-10-01).** With
-  `~/.gitconfig` and `~/.gitconfig.common` in `allowRead` (§1), the
-  include chain resolves and `commit.gpgsign`/`user.signingkey`/identity
-  all come from the global config — the old "empty ident → run
-  unsandboxed / set repo-local identity" advice is superseded. The
-  modern workaround for a repo without global resolution is inline
-  `-c user.name=... -c user.email=...`. Global git config is the single
-  source of truth: repo-local identity/signing overrides shadow the
-  chain and drift on key rotation — remove them.
+- **Identity resolution works sandboxed** (updated 2026-10-01) when
+  `~/.gitconfig` and `~/.gitconfig.common` are in `allowRead` (§1): the
+  include chain resolves and `commit.gpgsign`/`user.signingkey`/
+  identity all come from the global config — the old "empty ident → run
+  unsandboxed / set repo-local identity" advice is superseded. Global
+  git config is the single source of truth: repo-local identity/signing
+  overrides shadow the chain and drift on key rotation — remove them.
 
 - **Signing gotcha: relative include paths break silently.**
   `~/.gitconfig` includes `./.gitconfig.common` relatively; when the
@@ -436,220 +367,33 @@
   `git config --get commit.gpgsign` sandboxed; after any commit, verify
   `git log -1 --format='%G?'` = G (a silent break shows as N).
 
-- **`git commit` in a repo with a vp-based pre-commit hook: request
-  unsandboxed up front (updated 2026-10-01).** The ORIGINAL failure
-  (seccomp broke the vp shim → `exec: node: not found`) predates the
-  `allowRead: ["~/.local/share/vite-plus/"]` setting (originally
-  `~/.vite-plus/`, 2026-09-15; repointed 2026-10-25 for the v1.4.0 split
-  layout) that fixed the underlying path masking: sandboxed commits with the full vp pre-commit
-  hook now succeed (verified 2026-10-01, chat-hub `9136e77`). However,
-  GPG signing still needs the user's passphrase/gpg-agent, so the
-  commit-safely procedure remains: request unsandboxed with a reason up
-  front — don't burn a sandboxed attempt first. In the user's own
-  terminal none of this occurs. Diagnostic signature (historical): hook
-  output shows the audit script passing, then
-  `./node_modules/.bin/vp: 53: exec: node: not found`.
+- **GPG passphrase caching is TTL-limited**, not session-long: the
+  first commit of a day (or after a long gap) prompts in the alternate
+  buffer — the user's passphrase only. Why the environment is like
+  this: `docs/agent-terminal-rationale.md` (commit incidents: heredoc
+  aborts, the sweep failure mode, stale-buffer rollbacks, format-on-
+  save drift).
 
-- **vp hook scripts are re-executed by `/bin/sh -e` regardless of their
-  shebang (verified 2026-09-07, chat-hub).** The vite+ dispatcher
-  (`.vite-hooks/_/h`) runs each hook script as `"$__vp_shell" -e "$s"`
-  with `__vp_shell=/bin/sh` — so a `#!/usr/bin/env bash` shebang in
-  `.vite-hooks/pre-commit` is decorative, and bash-only syntax fails:
-  `set -o pipefail` → `Illegal option -o pipefail` (dash is the /bin/sh
-  on Ubuntu). Write hook scripts in POSIX sh. To get pipefail semantics
-  across a pipeline, capture the status explicitly:
+## 7. Forensics — stub
 
-  ```sh
-  vp staged | cat          # suppresses the spinner (see §4) in hook context
-  status=$?
-  [ $status -ne 0 ] && exit $status
-  ```
+Session/execution data locations and the escalation-audit procedure
+moved to the `session-forensics` skill (data-location map, probe
+notes). **Audit-trigger rule: when a command's behavior contradicts
+documented sandbox rules (sudden success after failures), audit the
+host-side chatSessions JSONL before theorizing** (§2). Evidence for
+the retracted warm-up pattern: `docs/agent-terminal-rationale.md`.
 
-- **Multi-session stale-buffer hazard (verified 2026-09-07, chat-hub).**
-  When two agent sessions (or a session + the user's editor) hold the
-  same file in context, one session can apply a pre-commit-state buffer
-  over already-committed changes — rolling the file back on disk (a
-  225-line rollback was caught this way; it also broke the build because
-  committed exports disappeared). Rules: (1) never `git restore` a
-  suspected rollback — `git stash push -m "<description>" <file>`
-  preserves it for forensics; (2) after accepting cross-session edits,
-  sanity-check `git diff --stat` before staging (a rollback shows as a
-  large deletion against recent commits); (3) verify recovery with the
-  repo's build + typecheck; (4) close/reload editor tabs in stale
-  sessions so they re-read the current file.
+## 8. Validation loop — moved
 
-- **Format-on-save can modify files mid-session (verified 2026-10-05).**
-  An editor format-on-save (e.g. the shfmt-based shell formatter) can
-  rewrite a file on disk while an agent session holds it — the agent's
-  next edit lands on changed content and the buffer shows a mysterious
-  "unsaved" flag the agent did not cause. Rules: (1) commit formatting
-  drift promptly so buffer/disk/HEAD stay in sync; (2) when a file
-  unexpectedly shows as modified, check whether a formatter touched it
-  (`git diff` for pure reformatting) before assuming data loss; (3) know
-  which formatter owns each file type (verify by scanning extension
-  package.json `documentFormattingProvider` capabilities — for shell
-  scripts it is the shfmt wrapper; oxfmt/vp check does not cover .sh).
+→ `pnpm-vite` skill §4: `vp install` after pulls, `vp check` +
+`vp test`, `vite.config.ts`/`package.json` task discovery via
+`vpr <script>`, `vp env doctor` for misbehavior.
 
-## 7. Forensics — where session/execution data actually lives
+## 9. Lint verification and autofix — moved
 
-When asked to audit what an agent did (exit codes, sandbox mode, network
-access), check locations in this order:
-
-1. **Windows host UI side** (authoritative, complete):
-   `/mnt/c/Users/<user>/AppData/Roaming/Code/User/workspaceStorage/<ws-hash>/chatSessions/<session-id>.jsonl`
-   — per-command `requestUnsandboxedExecution`, `requestAllowNetwork`,
-   `commandLine`, timestamps. **Escalation signature:** a *pair* of records
-   with the same `commandLine` — first `requestUnsandboxedExecution=false`,
-   then `=true` (see §2). Note (2026-09-15): in the current VS Code build
-   the `exitCode`/`sandboxedExecution` fields were not found at their
-   documented paths in the JSONL — schema may have drifted; the
-   `requestUnsandboxedExecution` pairing remains reliable. Note the WSL
-   username can differ from the login name (observed: `jonat` vs
-   `jonathan`).
-2. **WSL server-side transcript**
-   (`~/.vscode-server/data/User/workspaceStorage/<ws-hash>/GitHub.copilot-chat/transcripts/<id>.jsonl`)
-   — conversation events only. `tool.execution_complete` carries ONLY
-   `{toolCallId, success}`; `success: true` means the tool call returned, NOT
-   that the command exited 0. No exit codes, no sandbox flags.
-3. **Server-side debug logs** (`GitHub.copilot-chat/debug-logs/<id>/`) —
-   telemetry spans only (`session_start`); request/response bodies are not
-   written here. Sessions whose debug log never populates are permanently
-   invisible to session indexing (`/chronicle`), even after force reindex.
-   If the server-side debug log is empty for a session, skip directly to the
-   Windows host side — the server-side pipeline may have failed entirely for
-   that session, and the UI-side JSONL is the only complete record.
-   Exception (verified 2026-10-05): hook-execution spans (`"type":"hook"`
-   with `attrs.command/input/output/resultKind`) and `llm_request` events
-   (actual model payloads) DO appear in the server-side debug log — use
-   them to verify whether a hook fired and whether its deny/warning text
-   reached the model. Caveat: naive text-matching of the log gives false
-   positives — the agent's own script source echoed in earlier tool
-   results contains the same strings (distinguish by `%s` placeholder
-   presence). `tool_call` spans likewise carry `attrs.args` +
-   `attrs.result` — the authoritative per-call record (2026-10-27).
-   `status:"ok"` does NOT mean the edit landed: skipped calls also log
-   ok with result text "The user chose to skip the tool call…" — the
-   result TEXT is the discriminator.
-4. **VS Code user settings live Windows-side in WSL setups (verified
-   2026-10-05).**
-   `/mnt/c/Users/<user>/AppData/Roaming/Code/User/settings.json` — NOT
-   `~/.vscode-server/data/User/settings.json`. The file is JSONC: strip
-   comments string-aware (not plain `json.load`) and expect pre-existing
-   trailing commas (VS Code tolerates them). `/mnt/c` access may need
-   unsandboxed execution per the user's denyRead settings.
-5. **Session store (WSL side, open read-only):**
-   `~/.vscode-server/data/User/globalStorage/github.copilot-chat/session-store.db`
-   — the `session_files` table (`file_path, tool_name, turn_index,
-   first_seen_at`) is the per-file record of agent file-tool events. It
-   has NO Keep/Undo state column; Keep/Undo state lives in the
-   chat-editing session store (item 6), not here.
-6. **Chat-editing (Keep/Undo) state (Windows side — verified
-   2026-10-28):**
-   `/mnt/c/Users/<user>/AppData/Roaming/Code/User/workspaceStorage/<ws-hash>/chatEditingSessions/<session-id>/`
-   — `state.json` (v2: `initialFileContents` URI→content-hash map,
-   `recentSnapshot`, `timeline.checkpoints` per request/undo stop) plus
-   `contents/<hash>` content-addressed blobs (pre-edit originals +
-   intermediates). This is where Keep/Undo revert data actually lives;
-   the WSL side has no equivalent. One dir per chat session (336
-   observed, unbounded growth — housekeeping candidate). A reload can
-   silently drop queue entries while this data remains (§11).
-
-### 7.1 Escalation audit procedure
-
-When a command's behavior contradicts documented sandbox rules (sudden
-success after failures, results inconsistent with path masking), audit the
-host-side JSONL **before theorizing**. The agent's tool result does not
-reveal which execution mode actually ran; the JSONL does.
-
-Procedure: extract per-command `requestUnsandboxedExecution` values and
-look for **pairs** — the same `commandLine` appearing twice, first
-`requestUnsandboxedExecution=false`, then `=true`. A pair means the harness
-auto-escalated after a user approval prompt, and the result the agent saw
-came from the unsandboxed re-run. A ~25-line Python script suffices:
-
-```python
-import json
-# path = /mnt/c/Users/<user>/AppData/Roaming/Code/User/workspaceStorage/
-#        <ws-hash>/chatSessions/<session-id>.jsonl
-def walk(x):
-    if isinstance(x, dict):
-        if 'commandLine' in x and 'requestUnsandboxedExecution' in x:
-            yield x
-        else:
-            for v in x.values(): yield from walk(v)
-    elif isinstance(x, list):
-        for v in x: yield from walk(v)
-with open(path) as fh:
-    for i, line in enumerate(fh, 1):
-        try: o = json.loads(line)
-        except Exception: continue
-        for c in walk(o):
-            raw = c.get('commandLine', '')
-            if isinstance(raw, dict): raw = raw.get('original', str(raw))
-            cl = str(raw).replace('\n', ' ')[:60]
-            print(f"{i:4} unsb={c.get('requestUnsandboxedExecution')} | {cl}")
-```
-
-Verified 2026-09-15: this procedure explained the retracted "warm-up"
-pattern (§1) — 16 escalation pairs, every "success" traced to one. Caveats:
-the JSONL schema drifts between VS Code builds (`exitCode`/
-`sandboxedExecution` were absent in the current build); the
-`requestUnsandboxedExecution` pairing has remained reliable. The WSL
-username in the path can differ from the login name (`jonat` vs
-`jonathan`).
-
-Audit-ambiguity note (2026-10-01): escalation pairs make it hard to
-distinguish agent-requested from harness-initiated unsandboxed runs —
-agents now also legitimately request unsandboxed explicitly, producing
-single `=true` records. The two cases are distinguishable only by the
-absence of a preceding `=false` twin.
-
-Context-integrity note (verified 2026-10-01, session `898c9328`): a
-turn's records can go missing from Chat Debug while the host-side JSONL
-stays complete and disk work persists; session close/reopen restored
-agent-side context. Reinforces: the JSONL is the only authoritative
-record; after mid-turn anomalies, verify disk state directly
-(`git status`/`git diff` per repo) rather than trusting the transcript.
-
-## 8. Validation loop
-
-- Run `vp install` after pulling remote changes and before getting started.
-- Run `vp check` and `vp test` to format, lint, type check and test changes.
-- Check for `vite.config.ts` tasks or `package.json` scripts needed for
-  validation; run via `vpr <script>`.
-- If setup, runtime, or package-manager behavior looks wrong, run
-  `vp env doctor` and include its output when asking for help.
-
-## 9. Lint verification and autofix (Vite+/Oxlint projects)
-
-- **Per-file lint checks must use `vp lint <file>` (the built-in), never
-  `vpr lint <file>`.** `vpr lint` runs the npm script, which is typically
-  `vp lint . --max-warnings 0 ...` — the `.` lints the whole project and the
-  trailing path argument is effectively ignored. Verifying a single file's
-  cleanliness through `vpr lint <file>` can report 0 findings while the file
-  still has errors (observed: 39 real `sort-objects` errors invisible via
-  `vpr lint <file>` but shown by `vp lint <file>` and the VS Code Problems
-  panel). The Problems panel mirrors `vp lint`, so when editor and CLI
-  disagree, check which command the CLI actually ran.
-
-- **`--fix-suggestions` is not idempotent and does not converge in one
-  pass.** Re-sorting one object can expose new violations. Loop until the
-  error count reaches 0, checking with the same command that reports the
-  errors:
-
-  ```sh
-  until vp lint <file> 2>&1 | grep -q 'error'; do
-    vp lint --fix-suggestions <file> || break
-  done
-  ```
-
-  Observed: 39 errors needed 2+ passes; a single pass left 16. Review the
-  resulting diff — suggestion fixes can move comment-attached lines.
-
-- **`vp lint --fix` only applies safe fixes; `--fix-suggestions` applies
-  suggestion-level fixes** (e.g. `perfectionist/sort-objects`), which oxlint
-  documents as "may change program behavior". Sort rules are safe for plain
-  object literals but always eyeball the diff.
+→ `pnpm-vite` skill §5: per-file checks via `vp lint <file>` (never
+`vpr lint <file>`), the `--fix-suggestions` convergence loop, and the
+`--fix` vs `--fix-suggestions` distinction.
 
 ## 10. Meta-rules — editing and propagating THIS file
 
@@ -714,8 +458,9 @@ workflows:
 
 > Verified 2026-10-27/28 on Copilot Chat 0.71.0 (evidence:
 > ai-collaboration-guides `docs/plan/obsidian-agent-integration.md`
-> E15/E16). Earlier "0-byte husk" reports (2026-10-17/19) are not
-> reproducible in current builds — historical behavior.
+> E15/E16). The old "0-byte husk" history and mechanism (2026-10-17/19,
+> not reproducible in current builds) live in
+> `docs/agent-terminal-rationale.md`.
 
 The file-tool layer (`create_file`, `replace_string_in_file`, …) is NOT
 the sandboxed terminal layer: different permission gate, different
@@ -730,17 +475,14 @@ durability rules.
   - MODIFY + Undo → clean revert to prior content.
 - **The pending queue holds one entry per file; modifies stack** on the
   file's entry. Undo data IS persisted (Windows-side
-  `chatEditingSessions/<session-id>/` — §7 item 6), but the queue VIEW
+  `chatEditingSessions/<session-id>/` — `session-forensics` skill
+  data-location 6), but the queue VIEW
   can drop entries silently on reload (observed: reload #1 preserved 7
   entries; reload #2 dropped 9 = silent auto-Keep, content intact).
   Review before reloading — a dropped entry is unreachable via the UI
   even though its content history remains on disk.
-- **Mechanism of the old "husk" reports:** `initialFileContents` maps
-  every touched file to its pre-edit content hash; a file-tool CREATE
-  maps to the EMPTY blob (`da39a3e`). Undo restores that blob — older
-  builds wrote it as a 0-byte file (the "husk"); current builds delete
-  the file instead. That build change, not path class, explains the
-  2026-10-17/19 husks.
+- **Husk history is in the rationale doc** (why layer):
+  `docs/agent-terminal-rationale.md`.
 - **Permission gates:** (1) settings grants —
   `chat.agent.sandbox.fileSystem.linux.allowWrite` +
   `userConfiguredPaths.readwritePaths` (Windows-side settings.json) —
@@ -762,8 +504,8 @@ durability rules.
   (2026-10-27: `~/always-allow-scope-test-4.md` was believed "never
   materialized" for a week — it had existed all along).
 
+<!-- agent-terminal-rules: synced=2026-11-02T18:14:14Z src=5b0c9bdc -->
+<!-- agent-terminal-rules: synced=2026-11-02T18:09:09Z src=3e96e50a -->
 <!-- agent-terminal-rules: synced=2026-11-02T15:04:48Z src=23f22102 -->
 <!-- agent-terminal-rules: synced=2026-11-01T04:13:04Z src=ddc63ee0 -->
 <!-- agent-terminal-rules: synced=2026-10-28T10:42:26Z src=74682c8c -->
-<!-- agent-terminal-rules: synced=2026-10-28T08:05:00Z src=45019916 -->
-<!-- agent-terminal-rules: synced=2026-10-28T07:19:02Z src=f8a4b286 -->
