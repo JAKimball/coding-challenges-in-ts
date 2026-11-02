@@ -118,6 +118,30 @@
   doesn't include `~/.local/share/vite-plus/bin`. Use the canonical forms
   above before concluding a tool is missing.
 
+- **Node resolution through the vp shim (verified 2026-10-30).**
+  `~/.local/share/vite-plus/bin/node` is a symlink to `current/bin/vp` —
+  the shim resolves the runtime from the nearest `devEngines` pin
+  (`onFail: download` auto-installs it into `js_runtime/node/`), and
+  falls back to the **current LTS** when nothing pins a version (the
+  shim's `index_cache.json` tracks which release is LTS). Consequences:
+  (a) a new LTS rolls out silently on first invocation in unpinned
+  directories (observed: v26.13.0 "Lithium" auto-downloaded on
+  2026-10-30); (b) over **non-interactive ssh** the shim dir is not on
+  PATH (`.bashrc` is not sourced) — use `bash -ic '<cmd>'` on the remote
+  or an absolute path; (c) "node: command not found" over ssh usually
+  means (b), not a missing runtime.
+
+- **Never put raw control characters in tool-call payloads (learned
+  2026-10-30 — HARD RULE).** A raw Ctrl-C (U+0003) is illegal in XML and
+  JSON; when one decodes into a tool payload it breaks the framing,
+  content leaks across channels, and the context is spammed with noise
+  (a session had to be rolled back). To stop a background process use:
+  (1) a finite `durationMs`/timeout so it self-terminates, (2) `kill
+  <pid>` (SIGTERM — most tools print their summary on SIGTERM too),
+  (3) `tmux kill-session -t <name>`, or (4) the `killTerminal` tool.
+  Never "send Ctrl+C", even when a program's banner says "Ctrl+C for
+  summary".
+
 ## 2. Sandbox and network — how it actually works
 
 - **The sandbox is bubblewrap (`bwrap`) + `socat`, driven by
@@ -718,8 +742,8 @@ durability rules.
   (2026-10-27: `~/always-allow-scope-test-4.md` was believed "never
   materialized" for a week — it had existed all along).
 
+<!-- agent-terminal-rules: synced=2026-11-01T04:13:04Z src=ddc63ee0 -->
 <!-- agent-terminal-rules: synced=2026-10-28T10:42:26Z src=74682c8c -->
 <!-- agent-terminal-rules: synced=2026-10-28T08:05:00Z src=45019916 -->
 <!-- agent-terminal-rules: synced=2026-10-28T07:19:02Z src=f8a4b286 -->
 <!-- agent-terminal-rules: synced=2026-10-25T22:32:40Z src=cbdc6881 -->
-<!-- agent-terminal-rules: synced=2026-10-25T20:47:08Z src=f5b21c75 -->
