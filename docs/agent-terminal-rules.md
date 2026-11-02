@@ -142,6 +142,17 @@
   Never "send Ctrl+C", even when a program's banner says "Ctrl+C for
   summary".
 
+- **Never trust invisible characters in generated payload files
+  (learned 2026-11-01 — same class as the HARD RULE above).** Zero-width
+  spaces (U+200B), BOMs, and similar invisibles are legal in tool-call
+  text and silently corrupt machine-read files: a `git filter-repo
+  --replace-text` file generated twice in a row both times carried
+  U+200B after `==>`, which would have injected zero-width spaces into
+  every rewritten blob. When a file is consumed by a tool (replacement
+  lists, configs, fixtures), verify it **byte-exactly** (`python3 -c
+  "open(f,'rb').read().decode('ascii')"` or `od -c`) before use, and
+  scan outputs for the same class (`grep -P '[\x{200b}-\x{200f}\x{feff}]'`).
+
 ## 2. Sandbox and network — how it actually works
 
 - **The sandbox is bubblewrap (`bwrap`) + `socat`, driven by
@@ -171,6 +182,15 @@
   the filesystem. The network namespace IS shared while
   `network.enabled: false` — localhost TCP works, which is what makes
   a sandboxed TCP/FIFO relay possible (verified 2026-10-25).
+
+- **Sandboxed `ssh` cannot persist host keys — use explicit options
+  (learned 2026-11-01).** The sandbox blocks writes to
+  `~/.ssh/known_hosts`, so `StrictHostKeyChecking=accept-new` silently
+  fails to record the key and the *next* call dies with "Host key
+  verification failed". For scripted SSH from agent terminals use
+  `-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null`
+  (acceptable for short-lived probes to known hosts), or pre-seed
+  `known_hosts` in a user terminal and accept the TOFU once.
 
 - **WSL interop uses per-PID sockets under `/run/WSL/<pid>_interop`** —
   interop access cannot be path-allowlisted; any Windows `.exe` launch
@@ -742,8 +762,8 @@ durability rules.
   (2026-10-27: `~/always-allow-scope-test-4.md` was believed "never
   materialized" for a week — it had existed all along).
 
+<!-- agent-terminal-rules: synced=2026-11-02T15:04:48Z src=23f22102 -->
 <!-- agent-terminal-rules: synced=2026-11-01T04:13:04Z src=ddc63ee0 -->
 <!-- agent-terminal-rules: synced=2026-10-28T10:42:26Z src=74682c8c -->
 <!-- agent-terminal-rules: synced=2026-10-28T08:05:00Z src=45019916 -->
 <!-- agent-terminal-rules: synced=2026-10-28T07:19:02Z src=f8a4b286 -->
-<!-- agent-terminal-rules: synced=2026-10-25T22:32:40Z src=cbdc6881 -->
