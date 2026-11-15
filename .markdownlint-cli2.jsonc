@@ -31,7 +31,8 @@
     "first-line-h1": false,
     "no-inline-html": false,
     // TEMPORARY: disabled until the desired application scope is decided
-    // (201 findings across TOOLS_OVERVIEW.md and ad-hoc docs on 2026-08-31).
+    // (201 findings across TOOLS_OVERVIEW.md and ad-hoc docs on 2026-08-31;
+    // TOOLS_OVERVIEW.md moved to ai-collaboration-guides 2026-11-15).
     "markdownlint-sentences-per-line": false,
   },
   "customRules": ["markdownlint-sentences-per-line"],

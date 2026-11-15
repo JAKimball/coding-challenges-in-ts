@@ -1,7 +1,5 @@
 {
-  "dictionaries": [
-    "typescript"
-  ],
+  "dictionaries": ["typescript"],
   "ignorePaths": [
     "./coverage*",
     ".github",
@@ -17,8 +15,6 @@
     "aoc",
     "Binet's",
     "Bubuntu",
-    "BYOK",
-    "BYOKLM",
     "Codecov",
     "codespace",
     "codetime",
