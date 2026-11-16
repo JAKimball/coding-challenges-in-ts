@@ -42,7 +42,6 @@
     "lib",
     "node_modules",
     "src/aoc/**/README.md",
-    "src/aoc/ad-hoc/archive/**",
     "src/text/sample.md",
     // Scratch dirs are never lint targets (agent working files, not docs).
     "**/.vscode-scratch/**",
